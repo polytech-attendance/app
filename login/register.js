@@ -25,7 +25,7 @@ form.addEventListener("submit",(e)=>{
         })
         .then(response => {
             //if email has been registered, refuse request 
-            if (response.status == incidentmail){
+            if (response.status === incidentmail){
                 setErrorMsg(email, 'Почта была зарегистрирована');
             }
             else if (response.status === 200){
