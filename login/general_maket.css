@@ -1,0 +1,103 @@
+.gradient-custom-2 {
+    /* fallback for old browsers */
+    background: #fccb90;
+    
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #d8e4da, #8fe68c, #40d83b, #04e917);
+    
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #d8e4da, #8fe68c, #40d83b, #04e917);
+    }
+    
+    @media (min-width: 768px) {
+    .gradient-form {
+    height: 100vh !important;
+    }
+    }
+    @media (min-width: 769px) {
+    .gradient-custom-2 {
+    border-top-right-radius: .3rem;
+    border-bottom-right-radius: .3rem;
+    }
+    }
+  /* Bordered form */
+    .form-outline {
+      margin-bottom: 4px;
+      position: relative;
+    }
+    
+    /* Full-width inputs */
+    input[type=email], input[type=password] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+  
+    
+    /* Add a hover effect for buttons */
+    .btn:hover {
+      opacity: 0.8;
+    }
+    
+    /* Center the avatar image inside this container */
+    .imgcontainer {
+      text-align: center;
+      margin: 24px 0 12px 0;
+    }
+    
+    /* Avatar image */
+    img.avatar {
+      width: 40%;
+      border-radius: 50%;
+    }
+    
+    /* Add padding to containers */
+    .container {
+      padding: 16px;
+    }
+    
+    /* The "Forgot password" text */
+    span.psw {
+      padding-top: 16px;
+    }
+    
+    /* Change styles for span on extra small screens */
+    @media screen and (max-width: 300px) {
+      span.psw {
+        display: block;
+        float: none;
+      }
+    }
+
+
+/* Alert when validation failed */
+/* Pending mode */
+.form-outline small{
+    color: #df3434;
+    position: relative;
+    visibility: hidden;
+}
+/* Active mode */
+.form-outline.error small{
+    visibility: visible;
+}
+.loginform input.btn {
+    width: 20%;
+}
+
+.submit{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4px;
+}
+
+.submit input{
+    color: white;
+    margin-bottom: 4px;
+    background-color: green;
+}
+  
