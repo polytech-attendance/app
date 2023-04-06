@@ -5,12 +5,12 @@ from django.db import models
 
 class User(models.Model):
     class Meta:
-        verbose_name = 'Person'
-        verbose_name_plural = 'Persons'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 
     user_id = models.AutoField(primary_key=True)
-    user_password = models.CharField(max_length=255)
     user_login = models.CharField(max_length=255, unique=True)
+    user_password = models.CharField(max_length=255)
 
     def __str__(self) -> models.CharField:
         return self.user_login
@@ -21,7 +21,7 @@ class Teacher(models.Model):
         verbose_name = 'Teacher'
         verbose_name_plural = 'Teachers'
 
-    user_id = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name='User')
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, verbose_name='User')
     teacher_id = models.CharField(max_length=20, unique=True)
     teacher_name = models.CharField(max_length=100)
 
@@ -34,7 +34,7 @@ class GroupLeader(models.Model):
         verbose_name = 'GroupLeader'
         verbose_name_plural = 'GroupLeaders'
 
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     groupleader_id = models.CharField(max_length=20)
     groupleader_name = models.CharField(max_length=100)
     groupleader_promote = models.ForeignKey(to=Teacher, on_delete=models.CASCADE, verbose_name='Teacher')
@@ -49,7 +49,7 @@ class Group(models.Model):
         verbose_name_plural = 'Groups'
 
     group_id = models.IntegerField(unique=True)
-    groupleader_id = models.ForeignKey(to=GroupLeader, on_delete=models.CASCADE, verbose_name='GroupLeader')
+    groupleader = models.ForeignKey(to=GroupLeader, on_delete=models.CASCADE, verbose_name='GroupLeader')
     groupname = models.CharField(max_length=50)
 
     def __str__(self) -> models.CharField:
@@ -62,7 +62,7 @@ class Student(models.Model):
         verbose_name_plural = 'Students'
 
     student_id = models.AutoField(primary_key=True)
-    group_id = models.ForeignKey(to=Group, on_delete=models.CASCADE, verbose_name='Group')
+    group = models.ForeignKey(to=Group, on_delete=models.CASCADE, verbose_name='Group')
     student_name = models.CharField(max_length=255)
     is_foreign = models.BooleanField(default=False)
 
@@ -76,8 +76,8 @@ class Subject(models.Model):
         verbose_name_plural = 'Subjects'
 
     subject_id = models.IntegerField(unique=True)
-    group_id = models.ForeignKey(to=Group, on_delete=models.CASCADE, verbose_name='Group')
-    teacher_id = models.ForeignKey(to=Teacher, on_delete=models.CASCADE, verbose_name='Teacher')
+    group = models.ForeignKey(to=Group, on_delete=models.CASCADE, verbose_name='Group')
+    teacher = models.ForeignKey(to=Teacher, on_delete=models.CASCADE, verbose_name='Teacher')
     subject_name = models.CharField(max_length=255)
 
     def __str__(self) -> models.CharField:
@@ -90,7 +90,7 @@ class Class(models.Model):
         verbose_name_plural = 'Classes'
 
     class_id = models.IntegerField(unique=True)
-    subject_id = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Subject')
+    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Subject')
     class_start_time = models.DateTimeField()
     class_end_time = models.DateTimeField()
 
@@ -102,5 +102,5 @@ class Attendance(models.Model):
 
     attendance_id = models.AutoField(primary_key=True)
     class_id = models.ForeignKey(to=Class, on_delete=models.CASCADE, verbose_name='Class')
-    student_id = models.ForeignKey(to=Student, on_delete=models.CASCADE, verbose_name='Student')
+    student = models.ForeignKey(to=Student, on_delete=models.CASCADE, verbose_name='Student')
     is_attendend = models.BooleanField(default=False)
