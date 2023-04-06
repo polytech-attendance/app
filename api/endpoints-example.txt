@@ -1,0 +1,14 @@
+1.
+/users
+
+GET
+PUT
+
+
+/users/<id>
+
+GET
+PUT
+DELETE
+
+2.

@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path
 
 from attendance.views import GroupAPIView
+from attendance.views import UserAPIView
 
 apiTAG = 'api/v1/'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(f'{apiTAG}groups/',GroupAPIView.as_view())
+    path(f'{apiTAG}groups/',GroupAPIView.as_view()),
+    path(f'{apiTAG}users/',UserAPIView.as_view())
 ]
