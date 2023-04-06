@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from attendance.views import GroupAPIView
+
+apiTAG = 'api/v1/'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(f'{apiTAG}groups/',GroupAPIView.as_view())
 ]
