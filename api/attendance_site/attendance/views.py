@@ -22,22 +22,18 @@ class UserAPIView(APIView):
         return Response({'posts': UserSerializer(user_data, many=True).data})
 
     def post(self, request):
-        print(type(User.objects.all()))
+        # Hashing user_password with SHA255
+        password_hash = str_to_hash(request.data.get('user_password'))
+        request.data['user_password'] = password_hash
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Hashing user_password with SHA255
-        password_hash = str_to_hash(request.data.get('user_password'))
-
         # checking is user_login is unique
         if User.objects.filter(user_login=request.data.get('user_login')).exists():
-            return Response(
-                {'post': {'user_login': f'Such a user with login {request.data.get("user_login")}' + ' already exists'}},
-                status=400)
+            return Response({'error': f'Such a user with login {request.data.get("user_login")}' + ' already exists'},
+                            status=400)
 
-        post_new = User.objects.create(
-            user_login=request.data.get('user_login'),
-            user_password=password_hash
-        )
-
-        return Response({'post': UserSerializer(post_new).data})
+        #post data to database
+        serializer.save()
+        return Response({'post': serializer.data},
+                        status=201)

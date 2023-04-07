@@ -11,3 +11,6 @@ class GroupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.Serializer):
     user_login = serializers.CharField(max_length=255)
     user_password = serializers.CharField(max_length=255)
+
+    def create(self, validated_data):
+        return User.objects.create(**validated_data)
