@@ -2,13 +2,7 @@
 /users
 
 GET
-PUT
+POST
 
-
-/users/<id>
-
-GET
-PUT
-DELETE
 
 2.

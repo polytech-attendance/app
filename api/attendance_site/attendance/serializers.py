@@ -8,7 +8,6 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('group_id', 'groupname', 'groupleader_id')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('user_id','user_password','user_login')
+class UserSerializer(serializers.Serializer):
+    user_login = serializers.CharField(max_length=255)
+    user_password = serializers.CharField(max_length=255)

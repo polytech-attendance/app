@@ -49,7 +49,7 @@ class Group(models.Model):
         verbose_name_plural = 'Groups'
 
     group_id = models.IntegerField(unique=True)
-    groupleader = models.ForeignKey(to=GroupLeader, on_delete=models.CASCADE, verbose_name='GroupLeader')
+    groupleader = models.ForeignKey(to=GroupLeader, on_delete=models.CASCADE, verbose_name='GroupLeader',null=True)
     groupname = models.CharField(max_length=50)
 
     def __str__(self) -> models.CharField:
