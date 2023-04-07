@@ -6,11 +6,8 @@ from .auxiliary.hash_coding import str_to_hash
 from .models import Group
 from .models import User
 
-
 from .serializers import GroupSerializer
 from .serializers import UserSerializer
-
-
 
 
 # Create your views here.
@@ -25,16 +22,22 @@ class UserAPIView(APIView):
         return Response({'posts': UserSerializer(user_data, many=True).data})
 
     def post(self, request):
+        print(type(User.objects.all()))
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        #Hashing user_password with SHA255
+        # Hashing user_password with SHA255
         password_hash = str_to_hash(request.data.get('user_password'))
 
+        # checking is user_login is unique
+        if User.objects.filter(user_login=request.data.get('user_login')).exists():
+            return Response(
+                {'post': {'user_login': f'Such a user with login {request.data.get("user_login")}' + ' already exists'}},
+                status=400)
 
         post_new = User.objects.create(
-            user_login = request.data.get('user_login'),
-            user_password = password_hash
+            user_login=request.data.get('user_login'),
+            user_password=password_hash
         )
 
-        return Response({'post' : UserSerializer(post_new).data})
+        return Response({'post': UserSerializer(post_new).data})
