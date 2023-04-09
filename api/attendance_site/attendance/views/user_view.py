@@ -1,13 +1,13 @@
-from rest_framework.generics import ListAPIView
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.attendance_site.attendance.auxiliary.hash_coding import str_to_hash
-from api.attendance_site.attendance.models import Group
-from api.attendance_site.attendance.models import User
+from attendance.auxiliary.hash_coding import str_to_hash
 
-from api.attendance_site.attendance.serializers import GroupSerializer
-from api.attendance_site.attendance.serializers import UserSerializer
+from attendance.models import User
+
+
+from attendance.serializers import UserSerializer
 
 
 # Create your views here.
@@ -19,11 +19,15 @@ class UserAPIView(APIView):
         return Response({'posts': UserSerializer(user_data, many=True).data})
 
     def post(self, request):
+
+
         # Hashing user_password with SHA255
-        password_hash = str_to_hash(request.data.get('user_password'))
-        request.data['user_password'] = password_hash
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        password_hash = str_to_hash(request.data.get('user_password'))
+        request.data['user_password'] = password_hash
+
 
         # checking is user_login is unique
         if User.objects.filter(user_login=request.data.get('user_login')).exists():
