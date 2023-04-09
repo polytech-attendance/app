@@ -2,18 +2,15 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .auxiliary.hash_coding import str_to_hash
-from .models import Group
-from .models import User
+from api.attendance_site.attendance.auxiliary.hash_coding import str_to_hash
+from api.attendance_site.attendance.models import Group
+from api.attendance_site.attendance.models import User
 
-from .serializers import GroupSerializer
-from .serializers import UserSerializer
+from api.attendance_site.attendance.serializers import GroupSerializer
+from api.attendance_site.attendance.serializers import UserSerializer
 
 
 # Create your views here.
-class GroupAPIView(ListAPIView):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
 
 
 class UserAPIView(APIView):
