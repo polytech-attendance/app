@@ -21,7 +21,10 @@ from attendance.views.group_view import GroupAPIView
 from attendance.views.user_view import UserAPIView
 from attendance.views.teacher_view import TeacherAPIView
 
+from rest_framework import routers
+
 apiTAG = 'api/v1/'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
