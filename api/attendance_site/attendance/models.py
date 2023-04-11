@@ -104,3 +104,5 @@ class Attendance(models.Model):
     class_id = models.ForeignKey(to=Class, on_delete=models.CASCADE, verbose_name='Class')
     student = models.ForeignKey(to=Student, on_delete=models.CASCADE, verbose_name='Student')
     is_attendend = models.BooleanField(default=False)
+    update_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(to=User, on_delete=models.CASCADE,verbose_name='User')
