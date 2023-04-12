@@ -1,0 +1,38 @@
+@import url(./general_maket.css);
+  /* Alert when validation failed */
+    /* Pending mode */
+
+
+/* set input border to highlight */
+.form-outline.error input{
+  border-color:  #df3434;
+}
+.form-outline.success input{
+  border-color: #39df7e;
+}
+
+/* set input circle */
+.form-outline i{
+  right: 12px;
+  top: 45px;
+  position: absolute;
+  visibility: hidden;
+}
+
+.form-outline.success .bi-check-circle{
+    color: #39df7e;
+    visibility: visible;
+}
+
+.form-outline.error .bi-check-circle{
+  visibility: hidden;
+}
+
+.form-outline.error .bi-exclamation-circle{
+    color: #df3434;
+    visibility: visible;
+}
+
+.form-outline.success .bi-exclamation-circle{
+  visibility: hidden;
+}
