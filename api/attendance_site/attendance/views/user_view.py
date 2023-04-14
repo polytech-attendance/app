@@ -19,15 +19,13 @@ class UserAPIView(APIView):
         return Response({'posts': UserSerializer(user_data, many=True).data})
 
     def post(self, request):
-
-
-        # Hashing user_password with SHA255
         serializer = UserSerializer(data=request.data)
+        # Hashing user_password with SHA255
+        if not (request.data.get('user_password') is None):
+            password_hash = str_to_hash(request.data.get('user_password'))
+            request.data['user_password'] = password_hash
+
         serializer.is_valid(raise_exception=True)
-
-        password_hash = str_to_hash(request.data.get('user_password'))
-        request.data['user_password'] = password_hash
-
 
         # checking is user_login is unique
         if User.objects.filter(user_login=request.data.get('user_login')).exists():
