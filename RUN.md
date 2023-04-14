@@ -1,11 +1,11 @@
-# Запуск backend
+# Запуск Backend
 
 1. Установить виртуальное окружение Python `python -m venv ./venv/` (выполняется в корне проекта — в папке `app`)
 2. Выполнить `cd ./api && pip install -r requirements.txt`:
    подтянуть зависимости (команда `pip install` выполняется в папке `api`)
 3. Положить файл `db.sqlite3` в папку `app/api/attendance_site`
 4. Открыть консоль с виртуальным окружением:
-  `venv\Scripts\activate.bat` для Windows, `venv/bin/activate` для Linux.
+  `venv\Scripts\activate.bat` для Windows, `source venv/bin/activate` для Linux.
 5. В этой консоли выполнить `python manage.py runserver`
 
 Если все успешно, будет выведено
