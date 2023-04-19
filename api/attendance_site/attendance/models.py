@@ -84,15 +84,15 @@ class Subject(models.Model):
         return self.subject_name
 
 
-class Class(models.Model):
+class Lesson(models.Model):
     class Meta:
-        verbose_name = 'Class'
-        verbose_name_plural = 'Classes'
+        verbose_name = 'Lesson'
+        verbose_name_plural = 'Lessons'
 
-    class_id = models.IntegerField(unique=True)
+    lesson_id = models.IntegerField(unique=True)
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Subject')
-    class_start_time = models.DateTimeField()
-    class_end_time = models.DateTimeField()
+    lesson_start_time = models.DateTimeField()
+    lesson_end_time = models.DateTimeField()
 
 
 class Attendance(models.Model):
@@ -101,7 +101,7 @@ class Attendance(models.Model):
         verbose_name_plural = 'Attendances'
 
     attendance_id = models.AutoField(primary_key=True)
-    class_id = models.ForeignKey(to=Class, on_delete=models.CASCADE, verbose_name='Class')
+    lesson = models.ForeignKey(to=Lesson, on_delete=models.CASCADE, verbose_name='Lesson')
     student = models.ForeignKey(to=Student, on_delete=models.CASCADE, verbose_name='Student')
     is_attendend = models.BooleanField(default=False)
     update_at = models.DateTimeField(auto_now=True)
