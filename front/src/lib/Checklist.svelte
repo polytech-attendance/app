@@ -7,27 +7,13 @@
 		// date: date,
 		// time: time
 		// }
+	console.log((props.groupId).toString());
 	const options = {
 		tableSelector: "#check-table",
 		studentSelector: ".row",
 	}
-
-	//only get group lists to load table. Interaction later based on each element of student. 
-	// dataRaw = {[group_id, [att:]]}
-	//use date, lesson etc here
-	// export const dataRaw = fetch('')
-	// 	.then(response => {
-	// 		if (response !== 200){
-	// 			console.log ("Error: Request error");
-	// 		}
-	// 		else{
-	// 			return response.JSON();
-	// 		}
-	// 	})
-	// 	.catch(error=>{
-	// 		console.log("Connection error: " + error);
-	// 	})
-
+    const baseURL = 'http://localhost:5173';
+		
 
 	function getParent(element, selector){
 		console.log(element)
@@ -41,9 +27,8 @@
 	}
 
 	//studentList should get from the main page. Click each group leading to each
-	let studentList = [{student_id: 1234,student_name:'a', student_status: true, student_is_foreign: true}, {student_name:'b', student_status: false,student_is_foreign: false}];
 
-	export function toggleElement(element){
+	function toggleElement(element){
 		let parent = getParent(element,options.studentSelector);
 
 		if (parent.classList.contains("absent")){
@@ -53,8 +38,9 @@
 		else parent.classList.add("absent");
 		return 0;
 	}
-	export function sendStatus(status,studentId){
 
+	//til now not modified
+	function sendStatus(status,studentId){
 		//send data to update attendance api
 		fetch('http::/api/api/data',{
 			method: 'post',
@@ -79,6 +65,12 @@
 			console.log(error);
 		})
 	}
+		let group = fetch(baseURL+'/students?groupId='+(props.groupId).toString())
+		.then(response =>{
+			return response.json()
+		})
+		.then(data => {return data})
+		.catch(err=>console.log('Cannot get data: '+err));
 </script>
 
 <!-- Test button --> <!-- Replace by button on schedule -->
@@ -92,31 +84,40 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<!-- Группа -->
-				Группа: {props.groupName}
+			  <p>Группа: {props.groupName}</p>	
+				<p>{props.date}</p>
+				<p>{props.time}</p>
 			</div>
+			{#await group}
+			<p>loading group...</p>
+			{:then group} 
 			<div class="modal-body">
 				<div class="container">
-					{#each studentList as student}
-						<button class={"row w-100"+" "+
-						(student.student_is_foreign ? "":"foreign")+" "+
-						(student.student_status ? "":"absent")} on:click={(event)=>{
-							sendStatus(toggleElement(event.target),student.student_id)
+					{#each group.students as student}
+						<button class={"btn row w-100"+" "+
+						(student.is_foreign ? "":"foreign")+" "+
+						(student.status ? "":"absent")} on:click={(event)=>{
+							sendStatus(toggleElement(event.target),student.id)
 						}}
-						id={student.student_id}>
-						{student.student_name + (student.student_is_foreign ? "*" :"")}
+						id={student.id}>
+						{student.student_name + (student.is_foreign ? "*" :"")}
 						</button>
 					{/each}
 				</div>
 			</div>
+			{/await}
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыт</button>
 			</div>
+
 		</div>		
 	</div>
 </div>
 
 <style>
-
+	a{
+		display:flex
+	}
 	.row.absent {
 		background-color: #ec6d79;
 	}
@@ -126,9 +127,10 @@
 	.row{
 		margin-top: 10px;
 		background-color: #66e9ac;
-		border-radius: 1px;
+		border-radius: 5px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		align-content: left;
 	}
-	@media (min-width: 640px) {
 
-	}
 </style>

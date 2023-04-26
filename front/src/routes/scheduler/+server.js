@@ -10,6 +10,7 @@ const scheduleData = JSON.parse(fs.readFileSync('src/lib/schedule.json', 'utf-8'
 function getByTeacherId(data, teacherID){
     //filter lessons where teacher is matched
     let daysFiltered = [];
+    let teacherObject;
     data.days.forEach(({weekday, date, lessons}) => {
       daysFiltered.push(
         {
@@ -20,12 +21,23 @@ function getByTeacherId(data, teacherID){
             if (lesson.teachers === null) return false;
 
             return lesson.teachers.filter(teacher => {
+              if (teacherObject === undefined && teacher.id === teacherID)
+                teacherObject = {
+                  id: 3549,
+                  full_name: teacher.full_name,
+                  first_name: teacher.first_name,
+                  middle_name: teacher.middle_name,
+                  last_name: teacher.last_name,
+                  grade: teacher.grade,
+                  chair: teacher.grade,
+                 };
               return (teacher.id === teacherID);
             }).length;
           })
         })
       });
     return {
+      teacher: teacherObject,
       week: data.week,
       days: daysFiltered
     };
