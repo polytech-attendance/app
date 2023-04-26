@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Group, Teacher
-from .models import User
+from .models import Group, Teacher, Lesson, User, Subject
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,3 +22,22 @@ class TeacherSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Teacher.objects.create(**validated_data)
+
+
+class LessonSerializer(serializers.Serializer):
+    lesson_id = serializers.IntegerField()
+    subject_id = serializers.IntegerField()
+    lesson_start_time = serializers.DateTimeField()
+    lesson_end_time = serializers.DateTimeField()
+
+    def create(self, validated_data):
+        return Lesson.objects.create(**validated_data)
+
+class SubjectSerializer(serializers.Serializer):
+    subject_id = serializers.IntegerField()
+    group_id = serializers.IntegerField()
+    teacher_id = serializers.IntegerField()
+    subject_name = serializers.CharField()
+
+    def create(self, validated_data):
+        return Subject.objects.create(**validated_data)
