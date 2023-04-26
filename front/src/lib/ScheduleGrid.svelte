@@ -47,7 +47,8 @@
 <div class="topnav">
     <p class="greeting"> Здравствуйте, {schedule.teacher.full_name} !</p>
 </div>
-<div class="main-board">
+<section class="gradient-custom">
+    <div class="main-board">
         <div class="grid-container">
             {#each schedule.days as day}
                 <div class="grid-day-header" style:grid-column={day.weekday+1}>{displayDate(day.weekday)} {day.date}</div>
@@ -79,14 +80,30 @@
             {/each}
         </div>
     </div>
+</section>
+
 {/await}
 
 
 
 
 <style>
+.gradient-custom{
+    /* fallback for old browsers */
+    background: #fccb90;
+    
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #d8e4da, #8fe68c, #40d83b, #04e917);
+    
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #d8e4da, #8fe68c, #40d83b, #04e917);
+
+}
+    
   .main-board{
-    max-width: 80%;
+    align-self: center;
+    margin: 10px;
+    max-width:100%;
     display: flex;
     flex-direction:row;
     align-items: right;
@@ -103,7 +120,8 @@
 
 }
 .grid-item .teacher {
-    color: black;
+    color: gray;
+    opacity: 50%;
     font-size: 11pt;
 }
 .grid-container {
@@ -114,6 +132,7 @@
     border-width: 5px gray;
     max-width: 90%;
     max-height: 90%;
+    background-color: white;
 }
 .grid-day-header {
     grid-row: 1;
@@ -122,12 +141,12 @@
 }
 .grid-item {
     /*border: black 1pt solid;*/
-    border: 5px black;
     padding: 5px;
-    background-color: var(--purple);
     gap: 10px;
     display: flex;
     flex-direction: column;
     min-width: 50%;
+    border-radius: 5px;
+    border-color: black;
 }
 </style>

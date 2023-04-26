@@ -7,7 +7,6 @@
 		// date: date,
 		// time: time
 		// }
-	console.log((props.groupId).toString());
 	const options = {
 		tableSelector: "#check-table",
 		studentSelector: ".row",
@@ -65,21 +64,23 @@
 			console.log(error);
 		})
 	}
-		let group = fetch(baseURL+'/students?groupId='+(props.groupId).toString())
+		 //reactivity while pros is updated
+		let groupLoading =  fetch(baseURL+'/students?groupId='+(props.groupId).toString())
 		.then(response =>{
+			console.log(props.groupId);
 			return response.json()
 		})
 		.then(data => {return data})
 		.catch(err=>console.log('Cannot get data: '+err));
+		//assure reactivity
 </script>
 
-<!-- Test button --> <!-- Replace by button on schedule -->
-
-  <a class="text-muted" href="#!" data-bs-toggle="modal" data-bs-target="#check-table">
+<!-- Test button --> 
+  <a class="text-muted" href="#!" data-bs-toggle="modal" data-bs-target={"#check-table" + props.groupId.toString()}>
 	{props.groupName}
   </a>
-
-  <div class="modal fade" id="check-table" tabindex="-1">
+  <!-- Bug appeared here: must pay attention to the data-bs-target (to avoid pointing to the same modal for all text-muted) -->
+  <div class="modal fade" id={"check-table" + props.groupId.toString()}>
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -88,7 +89,7 @@
 				<p>{props.date}</p>
 				<p>{props.time}</p>
 			</div>
-			{#await group}
+			{#await groupLoading}
 			<p>loading group...</p>
 			{:then group} 
 			<div class="modal-body">
