@@ -46,7 +46,7 @@
 </script>
 
 <!-- Test button -->
-<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target={"#check-table" + groupId}>
+<button class="btn btn-light" data-bs-toggle="modal" data-bs-target={"#check-table" + groupId}>
     {groupName}
 </button>
 <!-- Bug appeared here: must pay attention to the data-bs-target (to avoid pointing to the same modal for all text-muted) -->

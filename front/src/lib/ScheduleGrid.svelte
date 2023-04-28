@@ -20,7 +20,10 @@
                  style:grid-row={gridRow(time_start)}
             >
                 <div class="subject">{subject}</div>
-                <span class="lesson-type">{typeObj.name}</span>
+                <div>
+                    <span class="time">{time_start}</span>
+                    <span class="lesson-type">{typeObj.name}</span>
+                </div>
                 <div class="teachers">
                     {#each teachers as teacher}
                         <div class="teacher">
