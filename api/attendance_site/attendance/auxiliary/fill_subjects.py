@@ -17,7 +17,7 @@ def get_subject_cur_week(group_id : int):
             if not ((lesson['teachers']) == None):
                 item['teacher_id'] = lesson['teachers'][0]['id']
             else:
-                item['teacher_id'] = '-'
+                item['teacher_id'] = None
             if not item['subject_name'] in subject_set:
                 subject_set.add(item['subject_name'])
                 lst_sbj.append(item)
@@ -28,8 +28,7 @@ def get_subject_cur_week(group_id : int):
     # print(lst_sbj)
     return lst_sbj
 
-# group_id = 35426
-# get_subject_cur_week(group_id)
+
 
 '''
 for day in days:
@@ -39,3 +38,8 @@ for day in days:
         subject_set.add(lesson['subject'])
     log += '\n'
 '''
+
+if __name__ == '__main__':
+    group_id = 35426
+    print(get_subject_cur_week(group_id))
+
