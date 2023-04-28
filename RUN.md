@@ -14,3 +14,7 @@
 Django version 4.2, using settings 'attendance_site.settings'
 Starting development server at http://127.0.0.1:8000/
 ```
+
+# Полезные команды
+1.  `python manage.py make_admin_user ` - Создание user - admin с паролем admin. Teacher и GroupLeader с такими же параметрами. 
+2.  

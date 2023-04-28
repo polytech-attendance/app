@@ -33,11 +33,7 @@ class LessonSerializer(serializers.Serializer):
     def create(self, validated_data):
         return Lesson.objects.create(**validated_data)
 
-class SubjectSerializer(serializers.Serializer):
-    subject_id = serializers.IntegerField()
-    group_id = serializers.IntegerField()
-    teacher_id = serializers.IntegerField()
-    subject_name = serializers.CharField()
-
-    def create(self, validated_data):
-        return Subject.objects.create(**validated_data)
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ('subject_id', 'group', 'teacher', 'subject_name')

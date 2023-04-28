@@ -20,6 +20,7 @@ from django.urls import path
 from attendance.views.group_view import GroupAPIView
 from attendance.views.user_view import UserAPIView
 from attendance.views.teacher_view import TeacherAPIView
+from attendance.views.subject_view import SubjectAPIView
 
 from rest_framework import routers
 
@@ -29,6 +30,7 @@ apiTAG = 'api/v1/'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(f'{apiTAG}groups/',GroupAPIView.as_view()),
-    path(f'{apiTAG}users/',UserAPIView.as_view()),
+        path(f'{apiTAG}users/',UserAPIView.as_view()),
     path(f'{apiTAG}teachers/',TeacherAPIView.as_view()),
+    path(f'{apiTAG}subjects/',SubjectAPIView.as_view()),
 ]

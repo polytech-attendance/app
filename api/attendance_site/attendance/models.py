@@ -75,7 +75,6 @@ class Subject(models.Model):
         verbose_name = 'Subject'
         verbose_name_plural = 'Subjects'
 
-    subject_id = models.IntegerField(unique=True)
     group = models.ForeignKey(to=Group, on_delete=models.CASCADE, verbose_name='Group')
     teacher = models.ForeignKey(to=Teacher, on_delete=models.CASCADE, verbose_name='Teacher')
     subject_name = models.CharField(max_length=255)
