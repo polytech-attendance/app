@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const rawStudentList = JSON.parse(fs.readFileSync('F:/git/app/front/src/lib/students.json'),'utf-8');
+const rawStudentList = JSON.parse(fs.readFileSync('src/lib/students.json'),'utf-8');
 
 function getByGroupId(groupId){
     
