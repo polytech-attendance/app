@@ -37,3 +37,8 @@ class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = ('subject_id', 'group', 'teacher', 'subject_name')
+
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = ('subject', 'lesson_start_time', 'lesson_end_time')
