@@ -23,7 +23,7 @@ class Command(BaseCommand):
 
             lesson_start_time = tz.localize(datetime.strptime(item['lesson_start_time'], '%Y-%m-%d %H:%M:%S'))
             lesson_end_time = tz.localize(datetime.strptime(item['lesson_end_time'], '%Y-%m-%d %H:%M:%S'))
-            print(lesson_end_time)
+            print(lesson_start_time)
             lesson, created = lesson_manager.update_or_create(
                 subject=subject,
                 lesson_start_time=lesson_start_time,
