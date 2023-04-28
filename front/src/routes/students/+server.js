@@ -16,7 +16,7 @@ function getByGroupId(groupId){
 export function GET({url}){
     const groupId = Number(url.searchParams.get('groupId') ??  url.searchParams.get('groupId'));
     if (isNaN(groupId))
-      throw error(400, 'invalid request');
+      throw new Error(400, 'invalid request');
     return new Response (JSON.stringify(getByGroupId(groupId)));
   };
 
