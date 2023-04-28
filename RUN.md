@@ -15,6 +15,10 @@ Django version 4.2, using settings 'attendance_site.settings'
 Starting development server at http://127.0.0.1:8000/
 ```
 
-# Полезные команды
+# Полезные команды если запустились впервые (выполнять по порядку!!!)
 1.  `python manage.py make_admin_user ` - Создание user - admin с паролем admin. Teacher и GroupLeader с такими же параметрами. 
-2.  
+2.  `python manage.py update_groups <csv path>` - чтение из файла csv групп и заведения записей в БД
+3.  `python manage.py update_students <csv path>` - чтение из файла csv студентов и заведения записей в БД
+
+# Команды для определения предметов и пар в БД
+1. `python manage.py update_subjects` - обновляет список предметов (исключая ФИЗРУ, Военную кафедру)

@@ -87,8 +87,6 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'Lesson'
         verbose_name_plural = 'Lessons'
-
-    lesson_id = models.IntegerField(unique=True)
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Subject')
     lesson_start_time = models.DateTimeField()
     lesson_end_time = models.DateTimeField()

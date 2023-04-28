@@ -3,10 +3,9 @@ import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from attendance.models import Subject, Group, Teacher
-from attendance.managers import SubjectManager
 from attendance.auxiliary.fill_subjects import get_subject_cur_week
 from attendance.auxiliary.find_teacher_by_id import get_teacher_by_id
-from attendance.auxiliary.get_admin_user import ADMIN_USER
+
 from .make_new_user import make_new_user
 
 
@@ -14,6 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Получить данные из стороннего API
+        changes_count = 0
         groups = Group.objects.all()
         for group in groups:
             items = get_subject_cur_week(group.group_id)
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             subject_manager = Subject.objects
 
             for item in items:
-                if(item['teacher_id'] is None):
+                if (item['teacher_id'] is None):
                     self.stdout.write('Teacher\'s id is None. SKIP\n')
                     continue
 
@@ -46,5 +46,8 @@ class Command(BaseCommand):
 
                 if created:
                     self.stdout.write(self.style.SUCCESS(f'Subject "{subject.subject_name}" created'))
+                    changes_count+=1
                 else:
                     self.stdout.write(self.style.SUCCESS(f'Subject "{subject.subject_name}" updated'))
+                    changes_count+=1
+        self.stdout.write(self.style.SUCCESS(f'Subjects({changes_count}) updated or created'))
