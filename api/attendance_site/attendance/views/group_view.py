@@ -2,8 +2,8 @@ import pytz
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from attendance.models import Group, Lesson, Subject, Teacher
-from attendance.serializers import GroupSerializer, LessonSerializer
+from attendance.models import Group, Lesson, Subject, Teacher, Attendance, Student, User
+from attendance.serializers import GroupSerializer, LessonSerializer, AttendanceSerializer
 from datetime import datetime, timedelta
 from django.utils import timezone
 import json
@@ -117,3 +117,55 @@ class GroupItemView(APIView):
 
         serializer = GroupSerializer(group)
         return Response(serializer.data, status=200)
+
+class GroupAttendanceListView(APIView):
+    def get_student_list(self, group_id, lesson_id,request):
+        group = Group.objects.get(group_id=group_id)
+        students = Student.objects.filter(group_id=group.id)
+        attendend_list=[]
+        print(group.id)
+        for student in students:
+            try:
+                attendance_mark = Attendance.objects.get(student_id=student.student_id, lesson_id=lesson_id)
+            except Attendance.DoesNotExist:
+                default_admin_user = User.objects.get(user_login='admin');
+                attendance_data = {
+                    'lesson' : lesson_id,
+                    'student': student.student_id,
+                    'is_attendend': False,
+                    'updated_by': default_admin_user.user_id,
+                }
+                serializer = AttendanceSerializer(data=attendance_data)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+
+                # Debug message when new attendance data were added
+                print(f'New data in attendance list added\n{serializer.data}')
+            attendance_mark = Attendance.objects.get(student_id=student.student_id, lesson_id=lesson_id)
+            is_attendend_value = 0
+            if attendance_mark.is_attendend:
+                is_attendend_value = 1
+
+            attendend_data={
+                'abbrev_name': student.student_name,
+                'id': student.student_id,
+                'is_foreign': student.is_foreign,
+                'group_id': group_id,
+                'status': is_attendend_value,
+            }
+            attendend_list.append(attendend_data)
+
+        return attendend_list
+
+
+
+    def get(self, request, group_id, format=None):
+        try:
+            group = Group.objects.get(group_id=group_id)
+        except Group.DoesNotExist:
+            return Response({'error': f'Group with id {group_id} not found'}, status=400)
+
+        lesson_id = request.query_params.get('lesson_id', None)
+        response_data = self.get_student_list(group_id,lesson_id,request)
+
+        return Response(response_data, status=200)
