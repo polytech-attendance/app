@@ -33,6 +33,7 @@ class GroupScheduleView(APIView):
         start_date = (date - timedelta(days=weekday))
         end_date = (start_date + timedelta(days=6))
 
+
         lessons = Lesson.objects.filter(
             subject__group=group,
             lesson_start_time__gte=start_date,

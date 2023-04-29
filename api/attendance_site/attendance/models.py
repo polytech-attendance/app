@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models here.
 
@@ -88,8 +88,8 @@ class Lesson(models.Model):
         verbose_name = 'Lesson'
         verbose_name_plural = 'Lessons'
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Subject')
-    lesson_start_time = models.DateTimeField()
-    lesson_end_time = models.DateTimeField()
+    lesson_start_time = models.DateTimeField(default=timezone.now)
+    lesson_end_time = models.DateTimeField(default=timezone.now)
 
 
 class Attendance(models.Model):
@@ -101,5 +101,5 @@ class Attendance(models.Model):
     lesson = models.ForeignKey(to=Lesson, on_delete=models.CASCADE, verbose_name='Lesson')
     student = models.ForeignKey(to=Student, on_delete=models.CASCADE, verbose_name='Student')
     is_attendend = models.BooleanField(default=False)
-    update_at = models.DateTimeField(auto_now=True)
+    update_at = models.DateTimeField(auto_now=True,default=timezone.now)
     updated_by = models.ForeignKey(to=User, on_delete=models.CASCADE,verbose_name='User')
