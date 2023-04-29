@@ -1,7 +1,8 @@
+import pytz
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from attendance.models import Group, Lesson
+from attendance.models import Group, Lesson, Subject, Teacher
 from attendance.serializers import GroupSerializer, LessonSerializer
 from datetime import datetime, timedelta
 import json
@@ -20,15 +21,17 @@ class GroupScheduleView(APIView):
         except Group.DoesNotExist:
             return Response({'error': f'Group with id {group_id} not found'}, status=400)
         # проверка корректности даты
+        tz = pytz.timezone('Europe/Moscow')
         try:
-            date = datetime.strptime(str(date), '%Y-%m-%d').date()
+            date = tz.localize(datetime.strptime(str(date), '%Y-%m-%d')).date()
         except ValueError:
             return Response({'error': f'Invalid date format: {date}'}, status=400)
 
         # Определяем начальную и конечную даты недели
+
         weekday = date.weekday()
-        start_date = date - timedelta(days=weekday)
-        end_date = start_date + timedelta(days=6)
+        start_date = (date - timedelta(days=weekday))
+        end_date = (start_date + timedelta(days=6))
 
         lessons = Lesson.objects.filter(
             subject__group=group,
@@ -41,7 +44,7 @@ class GroupScheduleView(APIView):
 
         for i in range(7):
             day = {}
-            day['weekday'] = i
+            day['weekday'] = i + 1
             day['date'] = (start_date + timedelta(days=i)).strftime('%Y-%m-%d')
             day['lessons'] = []
             days.append(day)
@@ -49,7 +52,26 @@ class GroupScheduleView(APIView):
         for lesson in lessons:
             day_index = (lesson.lesson_start_time.date() - start_date).days
             lesson_data = LessonSerializer(lesson).data
-            days[day_index]['lessons'].append(lesson_data)
+            subject_by_lesson = Subject.objects.get(
+                id=lesson_data.get('subject')
+            )
+            teacher_by_subject = Teacher.objects.get(
+                id=subject_by_lesson.teacher_id
+            )
+
+            teacher_data={
+                'id' : teacher_by_subject.teacher_id,
+                'full_name' : teacher_by_subject.teacher_name,
+            }
+
+            subject_data={
+                'subject': subject_by_lesson.subject_name,
+                'time_start': lesson_data.get('lesson_start_time')[11:16],#datetime.strptime(lesson_data.get('lesson_start_time')[11:16],'%H:%M'),
+                'teacher' : teacher_data,
+            }
+
+            days[day_index]['lessons'].append(subject_data)
+
 
         response_data = {
             'week': {

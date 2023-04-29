@@ -23,7 +23,7 @@ class TeacherSerializer(serializers.Serializer):
     def create(self, validated_data):
         return Teacher.objects.create(**validated_data)
 
-
+'''
 class LessonSerializer(serializers.Serializer):
     lesson_id = serializers.IntegerField()
     subject_id = serializers.IntegerField()
@@ -32,11 +32,11 @@ class LessonSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Lesson.objects.create(**validated_data)
-
+'''
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ('subject_id', 'group', 'teacher', 'subject_name')
+        fields = ('id', 'group', 'teacher', 'subject_name')
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:

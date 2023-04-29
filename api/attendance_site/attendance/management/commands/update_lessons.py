@@ -12,28 +12,32 @@ class Command(BaseCommand):
         changes_count = 0
         groups = Group.objects.all()
         group = Group.objects.get(groupname='3530201/10001')
-        items = get_lesson_by_group(group.group_id)
+        changes_count = 0
+        groups = Group.objects.all()
+        for group in groups:
 
-        # Добавление предметов в базу данных
-        subject_manager = Subject.objects
-        lesson_manager = Lesson.objects
+            items = get_lesson_by_group(group.group_id)
 
-        for item in items:
-            subject = Subject.objects.get(subject_name=item['subject_name'], group=group)
+            # Добавление предметов в базу данных
+            subject_manager = Subject.objects
+            lesson_manager = Lesson.objects
 
-            lesson_start_time = tz.localize(datetime.strptime(item['lesson_start_time'], '%Y-%m-%d %H:%M:%S'))
-            lesson_end_time = tz.localize(datetime.strptime(item['lesson_end_time'], '%Y-%m-%d %H:%M:%S'))
-            print(lesson_start_time)
-            lesson, created = lesson_manager.update_or_create(
-                subject=subject,
-                lesson_start_time=lesson_start_time,
-                lesson_end_time=lesson_end_time,
-            )
+            for item in items:
+                subject = Subject.objects.get(subject_name=item['subject_name'], group=group)
 
-            if created:
-                self.stdout.write(self.style.SUCCESS(f'Lesson "{lesson.subject.subject_name}" created'))
+                lesson_start_time = tz.localize(datetime.strptime(item['lesson_start_time'], '%Y-%m-%d %H:%M:%S'))
+                lesson_end_time = tz.localize(datetime.strptime(item['lesson_end_time'], '%Y-%m-%d %H:%M:%S'))
+                print(lesson_start_time)
+                lesson, created = lesson_manager.update_or_create(
+                    subject=subject,
+                    lesson_start_time=lesson_start_time,
+                    lesson_end_time=lesson_end_time,
+                )
+
+                if created:
+                    self.stdout.write(self.style.SUCCESS(f'Lesson "{lesson.subject.subject_name}" created'))
+
+                else:
+                    self.stdout.write(self.style.SUCCESS(f'Subject "{lesson.subject.subject_name}" updated'))
                 changes_count += 1
-            else:
-                self.stdout.write(self.style.SUCCESS(f'Subject "{lesson.subject.subject_name}" updated'))
-                changes_count += 1
-        self.stdout.write(self.style.SUCCESS(f'Lessons({changes_count}) updated or created'))
+            self.stdout.write(self.style.SUCCESS(f'Lessons({changes_count}) updated or created'))
