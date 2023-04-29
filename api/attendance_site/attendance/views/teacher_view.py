@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta
 import pytz
-from django.db.models import Q
+from django.db.models import Q, Count
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from attendance.models import Teacher, Lesson, Subject, Group
 from attendance.models import User
+
+from collections import defaultdict
 
 from attendance.serializers import TeacherSerializer, LessonSerializer
 
@@ -64,6 +66,7 @@ class TeacherAPIView(APIView):
         return Response({'post': serializer.data},
                         status=201)
 
+
 class TeacherScheduleView(APIView):
     def get_week_schedule(self, teacher_id: int, date):
 
@@ -93,11 +96,13 @@ class TeacherScheduleView(APIView):
         lessons = Lesson.objects.filter(
             subject__teacher=teacher,
             lesson_start_time__gte=start_date,
-            lesson_end_time__lte=end_date,)
+            lesson_end_time__lte=end_date,
+        )
 
-        lessons = Lesson.objects.filter(
-            subject__teacher__isnull=False
-        ).select_related('subject__teacher', 'subject__group')
+        for lesson in lessons:
+            for check_for_duplicates in lessons:
+                if check_for_duplicates.lesson_start_time == lesson.lesson_start_time and check_for_duplicates.subject != lesson.subject:
+                    lessons
 
         # группируем занятия по дням недели (индекс = день)
         days = []
@@ -108,19 +113,48 @@ class TeacherScheduleView(APIView):
             day['date'] = (start_date.date() + timedelta(days=i)).strftime('%Y-%m-%d')
             day['lessons'] = []
 
-            daily_lessons = lessons.filter(lesson_start_time__date=day['date']).order_by('lesson_start_time')
+            daily_lessons = lessons.filter(
+                lesson_start_time__date=day['date']
+            )
 
-            for lesson in daily_lessons:
-                groups = [{'id': g.id, 'name': g.name} for g in lesson.groups.all()]
+            for daily_lesson in daily_lessons:
+                # Ищем занятия на это время
+                lessons_at_same_time = Lesson.objects.filter(
+                    lesson_start_time=daily_lesson.lesson_start_time,
+                    lesson_end_time=daily_lesson.lesson_end_time,
+                    subject__subject_name=daily_lesson.subject.subject_name,
+                ).select_related('subject__group')
+
+                # Формируем список групп, участвующих в занятии
+                groups = []
+                for lesson_at_same_time in lessons_at_same_time:
+                    group = lesson_at_same_time.subject.group_id
+                    if group not in groups:
+                        groups.append(group)
+                daily_lesson_time = daily_lesson.lesson_start_time.astimezone(tz)
+
+                daily_groups = []
+                for tmp_group in groups:
+                    group_from_db=Group.objects.get(id=tmp_group)
+                    group_data={
+                        'id':group_from_db.group_id,
+                        'groupname':group_from_db.groupname,
+                    }
+                    daily_groups.append(group_data)
+
                 lesson_data = {
-                    'subject': lesson.subject.subject_name,
-                    'time_start': lesson.lesson_start_time.time(),
-                    'teacher': {'id': teacher.teacher_id},
-                    'groups': groups,
+                    'subject': daily_lesson.subject.subject_name,
+                    'time_start': daily_lesson_time.strftime("%H:%M"),
+                    'groups': daily_groups,
                 }
-                day['lessons'].append(lesson_data)
+                if lesson_data not in day['lessons']:
+                    day['lessons'].append(lesson_data)
 
             days.append(day)
+
+        # cортировка по времени
+        for day in days:
+            day['lessons'].sort(key=lambda x: x['time_start'])
 
         for lesson in lessons:
             day_index = (lesson.lesson_start_time.date() - start_date.date()).days
@@ -137,11 +171,11 @@ class TeacherScheduleView(APIView):
                 'days': days,
                 'teacher': {
                     'id': teacher.teacher_id,
-                    'full_name': teacher.full_name,
+                    'full_name': teacher.teacher_name,
                 }
             }
 
-        return Response(response_data,status=200)
+        return Response(response_data, status=200)
 
     def get(self, request, teacher_id, format=None):
         try:
