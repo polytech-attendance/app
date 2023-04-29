@@ -19,7 +19,7 @@ from django.urls import path
 
 from attendance.views.group_view import GroupAPIView, GroupScheduleView, GroupItemView
 from attendance.views.user_view import UserAPIView
-from attendance.views.teacher_view import TeacherAPIView
+from attendance.views.teacher_view import TeacherAPIView, TeacherScheduleView
 from attendance.views.subject_view import SubjectAPIView
 
 from rest_framework import routers
@@ -31,9 +31,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(f'{apiTAG}users/',UserAPIView.as_view()),
     path(f'{apiTAG}teachers/',TeacherAPIView.as_view()),
+    path(f'{apiTAG}teachers/<int:teacher_id>/schedule/', TeacherScheduleView.as_view(), name='Teacher schedule'),
     path(f'{apiTAG}subjects/',SubjectAPIView.as_view()),
     path(f'{apiTAG}groups/', GroupAPIView.as_view(),name='Groups list'),
-    path('api/v1/groups/<int:group_id>/schedule/', GroupScheduleView.as_view(), name='Group week schedule'),
-    path('api/v1/groups/<int:group_id>/', GroupItemView.as_view(),
-         name='Group by id'),
+    path(f'{apiTAG}groups/<int:group_id>/schedule/', GroupScheduleView.as_view(), name='Group week schedule'),
+    path(f'{apiTAG}groups/<int:group_id>/', GroupItemView.as_view(), name='Group by id'),
 ]

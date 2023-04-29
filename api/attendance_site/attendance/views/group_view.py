@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from attendance.models import Group, Lesson, Subject, Teacher
 from attendance.serializers import GroupSerializer, LessonSerializer
 from datetime import datetime, timedelta
+from django.utils import timezone
 import json
 
 class GroupAPIView(ListAPIView):
@@ -33,6 +34,9 @@ class GroupScheduleView(APIView):
         start_date = (date - timedelta(days=weekday))
         end_date = (start_date + timedelta(days=6))
 
+        # Подставялем нужный часовой пояс
+        start_date = tz.localize(datetime.combine(start_date,datetime.min.time()))
+        end_date = tz.localize(datetime.combine(end_date,datetime.max.time()))
 
         lessons = Lesson.objects.filter(
             subject__group=group,
@@ -43,6 +47,7 @@ class GroupScheduleView(APIView):
         # группируем занятия по дням недели (индекс = день)
         days = []
 
+
         for i in range(7):
             day = {}
             day['weekday'] = i + 1
@@ -51,7 +56,7 @@ class GroupScheduleView(APIView):
             days.append(day)
 
         for lesson in lessons:
-            day_index = (lesson.lesson_start_time.date() - start_date).days
+            day_index = (lesson.lesson_start_time.date() - start_date.date()).days
             lesson_data = LessonSerializer(lesson).data
             subject_by_lesson = Subject.objects.get(
                 id=lesson_data.get('subject')
@@ -96,7 +101,7 @@ class GroupScheduleView(APIView):
 
         date = request.query_params.get('date', None)
         if not date:
-            date = datetime.date.today()
+            date = datetime.today().date()
         else:
             date = datetime.strptime(date, '%Y-%m-%d').date()
         schedule = self.get_week_schedule(group.group_id, date)

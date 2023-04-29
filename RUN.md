@@ -21,4 +21,5 @@ Starting development server at http://127.0.0.1:8000/
 3.  `python manage.py update_students <csv path>` - чтение из файла csv студентов и заведения записей в БД
 
 # Команды для определения предметов и пар в БД
+0. ` manage.py migrate --run-syncdb      `Пересоздать базу с 0 
 1. `python manage.py update_subjects` - обновляет список предметов (исключая ФИЗРУ, Военную кафедру)
