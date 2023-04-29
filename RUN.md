@@ -16,10 +16,11 @@ Starting development server at http://127.0.0.1:8000/
 ```
 
 # Полезные команды если запустились впервые (выполнять по порядку!!!)
+0. `python manage.py runserver` - запуск сервера АПИ
 1.  `python manage.py make_admin_user ` - Создание user - admin с паролем admin. Teacher и GroupLeader с такими же параметрами. 
 2.  `python manage.py update_groups <csv path>` - чтение из файла csv групп и заведения записей в БД
 3.  `python manage.py update_students <csv path>` - чтение из файла csv студентов и заведения записей в БД
+4.  `python manage.py update_subjects` - обновляет список предметов (исключая ФИЗРУ, Военную кафедру)
 
-# Команды для определения предметов и пар в БД
+# Если снесли базу:
 0. `python manage.py migrate --run-syncdb      `Пересоздать базу с 0 
-1. `python manage.py update_subjects` - обновляет список предметов (исключая ФИЗРУ, Военную кафедру)
