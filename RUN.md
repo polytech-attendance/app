@@ -15,7 +15,13 @@ Django version 4.2, using settings 'attendance_site.settings'
 Starting development server at http://127.0.0.1:8000/
 ```
 
+# Конфигурация базы данных если запустились
+0. Сперва выполните команду `python manage.py migrate --run-syncdb ` 
+1. После запустите сервер `python manage.py runserver`
+2. Далее по порядку выполняйте все команды `python manage.py make_admin_user ` `python manage.py update_groups <csv path>` `python manage.py update_students <csv path>` `python manage.py update_subjects` `python manage.py update_lessons`
+
 # Полезные команды если запустились впервые (выполнять по порядку!!!)
+(либо запустите файл configurate_db)
 0. `python manage.py runserver` - запуск сервера АПИ
 1.  `python manage.py make_admin_user ` - Создание user - admin с паролем admin. Teacher и GroupLeader с такими же параметрами. 
 2.  `python manage.py update_groups <csv path>` - чтение из файла csv групп и заведения записей в БД
@@ -23,4 +29,4 @@ Starting development server at http://127.0.0.1:8000/
 4.  `python manage.py update_subjects` - обновляет список предметов (исключая ФИЗРУ, Военную кафедру)
 
 # Если снесли базу:
-0. `python manage.py migrate --run-syncdb      `Пересоздать базу с 0 
+0. `python manage.py migrate --run-syncdb `     `Пересоздать базу с 0 
