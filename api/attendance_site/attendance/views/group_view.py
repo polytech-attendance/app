@@ -8,9 +8,11 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 import json
 
+
 class GroupAPIView(ListAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
 
 # `GET api/v1/groups/35427/schedule/?date=2023-04-13`
 class GroupScheduleView(APIView):
@@ -35,8 +37,8 @@ class GroupScheduleView(APIView):
         end_date = (start_date + timedelta(days=6))
 
         # Подставялем нужный часовой пояс
-        start_date = tz.localize(datetime.combine(start_date,datetime.min.time()))
-        end_date = tz.localize(datetime.combine(end_date,datetime.max.time()))
+        start_date = tz.localize(datetime.combine(start_date, datetime.min.time()))
+        end_date = tz.localize(datetime.combine(end_date, datetime.max.time()))
 
         lessons = Lesson.objects.filter(
             subject__group=group,
@@ -46,7 +48,6 @@ class GroupScheduleView(APIView):
 
         # группируем занятия по дням недели (индекс = день)
         days = []
-
 
         for i in range(7):
             day = {}
@@ -65,19 +66,19 @@ class GroupScheduleView(APIView):
                 id=subject_by_lesson.teacher_id
             )
 
-            teacher_data={
-                'id' : teacher_by_subject.teacher_id,
-                'full_name' : teacher_by_subject.teacher_name,
+            teacher_data = {
+                'id': teacher_by_subject.teacher_id,
+                'full_name': teacher_by_subject.teacher_name,
             }
 
-            subject_data={
+            subject_data = {
                 'subject': subject_by_lesson.subject_name,
-                'time_start': lesson_data.get('lesson_start_time')[11:16],#datetime.strptime(lesson_data.get('lesson_start_time')[11:16],'%H:%M'),
-                'teacher' : teacher_data,
+                'time_start': lesson_data.get('lesson_start_time')[11:16],
+                # datetime.strptime(lesson_data.get('lesson_start_time')[11:16],'%H:%M'),
+                'teacher': teacher_data,
             }
 
             days[day_index]['lessons'].append(subject_data)
-
 
         response_data = {
             'week': {
@@ -91,7 +92,7 @@ class GroupScheduleView(APIView):
             }
         }
 
-        return Response(response_data,status=200)
+        return Response(response_data, status=200)
 
     def get(self, request, group_id, format=None):
         try:
@@ -118,11 +119,12 @@ class GroupItemView(APIView):
         serializer = GroupSerializer(group)
         return Response(serializer.data, status=200)
 
+
 class GroupAttendanceListView(APIView):
-    def get_student_list(self, group_id, lesson_id,request):
+    def get_student_list(self, group_id, lesson_id, request):
         group = Group.objects.get(group_id=group_id)
         students = Student.objects.filter(group_id=group.id)
-        attendend_list=[]
+        attendend_list = []
         print(group.id)
         for student in students:
             try:
@@ -130,7 +132,7 @@ class GroupAttendanceListView(APIView):
             except Attendance.DoesNotExist:
                 default_admin_user = User.objects.get(user_login='admin');
                 attendance_data = {
-                    'lesson' : lesson_id,
+                    'lesson': lesson_id,
                     'student': student.student_id,
                     'is_attendend': False,
                     'updated_by': default_admin_user.user_id,
@@ -143,10 +145,15 @@ class GroupAttendanceListView(APIView):
                 print(f'New data in attendance list added\n{serializer.data}')
             attendance_mark = Attendance.objects.get(student_id=student.student_id, lesson_id=lesson_id)
             is_attendend_value = 0
+            is_foreign_value = 0
+
             if attendance_mark.is_attendend:
                 is_attendend_value = 1
 
-            attendend_data={
+            if student.is_foreign:
+                is_foreign_value = 1
+
+            attendend_data = {
                 'abbrev_name': student.student_name,
                 'id': student.student_id,
                 'is_foreign': student.is_foreign,
@@ -155,9 +162,8 @@ class GroupAttendanceListView(APIView):
             }
             attendend_list.append(attendend_data)
 
+        attendend_list.sort(key=lambda x: x['abbrev_name'])
         return attendend_list
-
-
 
     def get(self, request, group_id, format=None):
         try:
@@ -166,6 +172,6 @@ class GroupAttendanceListView(APIView):
             return Response({'error': f'Group with id {group_id} not found'}, status=400)
 
         lesson_id = request.query_params.get('lesson_id', None)
-        response_data = self.get_student_list(group_id,lesson_id,request)
+        response_data = self.get_student_list(group_id, lesson_id, request)
 
         return Response(response_data, status=200)
