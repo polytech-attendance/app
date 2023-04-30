@@ -167,7 +167,7 @@ POST /api/v1/attendance
 Запрос:
 
 ```
-PUT /api/v1/attendance
+POST /api/v1/attendance
 
 {
   "lesson_id": 341,

@@ -10,7 +10,7 @@ from django.utils import timezone
 import json
 
 class AttendanceView(APIView):
-    def do_mark(self,prepare_data,attendend_status :bool):
+    def do_mark(self,prepare_data):
         try:
             student_id = prepare_data.pop('student_id')
             lesson_id = prepare_data.pop('lesson_id')
@@ -23,7 +23,7 @@ class AttendanceView(APIView):
         if not attendance:
             return Response({'error': 'Attendance not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        attendance.is_attendend = attendend_status
+        attendance.is_attendend = student_status
         default_admin_user = User.objects.get(user_login='admin')
         attendance.updated_by = default_admin_user
 
@@ -35,10 +35,4 @@ class AttendanceView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def post(self, request):
         prepare_data=request.data
-        status=False
-        return self.do_mark(prepare_data,status)
-
-    def put(self,request):
-        prepare_data=request.data
-        status=True
-        return self.do_mark(prepare_data,status)
+        return self.do_mark(prepare_data)
