@@ -47,3 +47,20 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = '__all__'
+
+class AttendancePutPostSerializer(serializers.Serializer):
+    student_id = serializers.IntegerField()
+    lesson_id = serializers.IntegerField()
+    updated_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    is_attendend = serializers.BooleanField(required=False)
+
+    def create(self, validated_data):
+        return Attendance.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.student_id = validated_data.get('student_id', instance.student_id)
+        instance.lesson_id = validated_data.get('lesson_id', instance.lesson_id)
+        instance.updated_by = validated_data.get('updated_by', instance.updated_by)
+        instance.is_attendend = validated_data.get('is_attendend', instance.is_attendend)
+        instance.save()
+        return instance

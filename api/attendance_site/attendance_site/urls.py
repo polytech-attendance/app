@@ -21,6 +21,7 @@ from attendance.views.group_view import GroupAPIView, GroupScheduleView, GroupIt
 from attendance.views.user_view import UserAPIView
 from attendance.views.teacher_view import TeacherAPIView, TeacherScheduleView
 from attendance.views.subject_view import SubjectAPIView
+from attendance.views.attendance_view import AttendanceView
 
 from rest_framework import routers
 
@@ -37,4 +38,5 @@ urlpatterns = [
     path(f'{apiTAG}groups/<int:group_id>/schedule/', GroupScheduleView.as_view(), name='Group week schedule'),
     path(f'{apiTAG}groups/<int:group_id>/', GroupItemView.as_view(), name='Group by id'),
     path(f'{apiTAG}groups/<int:group_id>/attendance/', GroupAttendanceListView.as_view(), name='Attendance by lesson id'),
+    path(f'{apiTAG}attendance',AttendanceView.as_view(),name='Mark students as attend or not'),
 ]
