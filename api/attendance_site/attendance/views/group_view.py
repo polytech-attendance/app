@@ -124,8 +124,15 @@ class GroupAttendanceListView(APIView):
     def get_student_list(self, group_id, lesson_id, request):
         group = Group.objects.get(group_id=group_id)
         students = Student.objects.filter(group_id=group.id)
+        lesson = Lesson.objects.get(id=lesson_id)
+        subject = lesson.subject
+
+        if subject.group != group:
+            return {"error": f"This lesson isn't group {group.groupname} ({group_id})"}
+
         attendend_list = []
         print(group.id)
+
         for student in students:
             try:
                 attendance_mark = Attendance.objects.get(student_id=student.student_id, lesson_id=lesson_id)
@@ -173,5 +180,8 @@ class GroupAttendanceListView(APIView):
 
         lesson_id = request.query_params.get('lesson_id', None)
         response_data = self.get_student_list(group_id, lesson_id, request)
+
+        if 'error' in response_data:
+            return Response(response_data, status=400)
 
         return Response(response_data, status=200)
