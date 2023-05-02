@@ -1,7 +1,12 @@
 import pytz
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, ExpressionWrapper, F, Q
+
+from django.db.models.functions import Coalesce, Cast
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from django.db.models import BooleanField
 from attendance.models import Group, Lesson, Subject, Teacher, Attendance, Student, User
 from attendance.serializers import GroupSerializer, LessonSerializer, AttendanceSerializer
 from datetime import datetime, timedelta
@@ -121,9 +126,19 @@ class GroupItemView(APIView):
 
 
 class GroupAttendanceListView(APIView):
+
+    def get_queryset(self, group_id, lesson_id):
+        group_id = group_id
+        group = Group.objects.get(group_id=group_id)
+        queryset = Student.objects.filter(group_id=group.id).annotate(
+            status=Coalesce(Cast('attendance__is_attendend', BooleanField()), Value(False), output_field=BooleanField())
+        ).filter(
+            Q(attendance__lesson_id=lesson_id) | Q(attendance__lesson_id=None)
+        ).order_by('student_name')
+        return queryset
+
     def get_student_list(self, group_id, lesson_id, request):
         group = Group.objects.get(group_id=group_id)
-        students = Student.objects.filter(group_id=group.id)
         lesson = Lesson.objects.get(id=lesson_id)
         subject = lesson.subject
 
@@ -133,43 +148,27 @@ class GroupAttendanceListView(APIView):
         attendend_list = []
         print(group.id)
 
+        students = self.get_queryset(group_id,lesson_id)
+
         for student in students:
             try:
-                attendance_mark = Attendance.objects.get(student_id=student.student_id, lesson_id=lesson_id)
+                attendance_mark = Attendance.objects.get(student=student, lesson__id=lesson_id)
+                is_attendend_value = int(attendance_mark.is_attendend)
             except Attendance.DoesNotExist:
-                default_admin_user = User.objects.get(user_login='admin');
-                attendance_data = {
-                    'lesson': lesson_id,
-                    'student': student.student_id,
-                    'is_attendend': False,
-                    'updated_by': default_admin_user.user_id,
-                }
-                serializer = AttendanceSerializer(data=attendance_data)
-                if serializer.is_valid(raise_exception=True):
-                    serializer.save()
+                is_attendend_value = 0
 
-                # Debug message when new attendance data were added
-                print(f'New data in attendance list added\n{serializer.data}')
-            attendance_mark = Attendance.objects.get(student_id=student.student_id, lesson_id=lesson_id)
-            is_attendend_value = 0
-            is_foreign_value = 0
-
-            if attendance_mark.is_attendend:
-                is_attendend_value = 1
-
-            if student.is_foreign:
-                is_foreign_value = 1
+            is_foreign_value = int(student.is_foreign)
 
             attendend_data = {
                 'abbrev_name': student.student_name,
                 'id': student.student_id,
-                'is_foreign': student.is_foreign,
+                'is_foreign': is_foreign_value,
                 'group_id': group_id,
                 'status': is_attendend_value,
             }
             attendend_list.append(attendend_data)
 
-        attendend_list.sort(key=lambda x: x['abbrev_name'])
+        #attendend_list.sort(key=lambda x: x['abbrev_name'])
         return attendend_list
 
     def get(self, request, group_id, format=None):

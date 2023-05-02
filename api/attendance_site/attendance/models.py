@@ -97,7 +97,7 @@ class Attendance(models.Model):
         verbose_name = 'Attendance'
         verbose_name_plural = 'Attendances'
 
-    attendance_id = models.AutoField(primary_key=True)
+    attendance_id = models.IntegerField(primary_key=True)
     lesson = models.ForeignKey(to=Lesson, on_delete=models.CASCADE, verbose_name='Lesson')
     student = models.ForeignKey(to=Student, on_delete=models.CASCADE, verbose_name='Student')
     is_attendend = models.BooleanField(default=False)
