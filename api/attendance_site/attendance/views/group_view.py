@@ -78,6 +78,7 @@ class GroupScheduleView(APIView):
 
             subject_data = {
                 'subject': subject_by_lesson.subject_name,
+                'lesson_id':lesson.id,
                 'time_start': lesson_data.get('lesson_start_time')[11:16],
                 # datetime.strptime(lesson_data.get('lesson_start_time')[11:16],'%H:%M'),
                 'teacher': teacher_data,
