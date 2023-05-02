@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 # Удаление файла db.sqlite3
 os.remove('db.sqlite3')
@@ -11,4 +12,4 @@ commands = [
 
 # Выполнение команд по порядку
 for cmd in commands:
-    os.system(cmd)
+    subprocess.call(cmd, shell=True)
