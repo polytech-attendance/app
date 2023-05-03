@@ -215,3 +215,36 @@ POST /api/v1/attendance
   ]
 }
 ```
+
+
+6*
+Table attendance for subject and group from date_start to date_end
+http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/?date_start=YY-MM-DD&date_end=YY-MM-DD
+http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/
+{
+    "group": {
+        "group_id": 35426,
+        "groupname": "3530201/10001"
+    },
+    "subject": {
+        "subject_name": "Программирование микроконтроллеров",
+        "subject_id": 15,
+        "teacher": {
+            "teacher_id": "6083",
+            "teacher_name": "Вербова Наталья Михайловна"
+        }
+    },
+    "lessons": [
+            {
+            "lesson_id": 22,
+            "lesson_start_date": "2023-05-02",
+            "attendance_list": [ {
+                    "abbrev_name": " Алехичев А. В.",
+                    "id": 21350408,
+                    "is_foreign": 0,
+                    "group_id": 35426,
+                    "status": 0
+                },
+                ...
+                ]
+    ]
