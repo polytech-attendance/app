@@ -179,6 +179,9 @@ class GroupAttendanceListView(APIView):
             return Response({'error': f'Group with id {group_id} not found'}, status=400)
 
         lesson_id = request.query_params.get('lesson_id', None)
+        if lesson_id is None:
+            return Response({'error':'You need to match ?lesson_id'},status=400)
+
         response_data = self.get_student_list(group_id, lesson_id, request)
 
         if 'error' in response_data:
