@@ -11,6 +11,7 @@ from attendance.models import Group, Lesson, Subject, Teacher, Attendance, Stude
 from attendance.serializers import GroupSerializer, LessonSerializer, AttendanceSerializer
 from datetime import datetime, timedelta
 from django.utils import timezone
+import requests
 import json
 
 
@@ -129,13 +130,16 @@ class GroupItemView(APIView):
 class GroupAttendanceListView(APIView):
 
     def get_queryset(self, group_id, lesson_id):
-        group_id = group_id
         group = Group.objects.get(group_id=group_id)
-        queryset = Student.objects.filter(group_id=group.id).annotate(
-            status=Coalesce(Cast('attendance__is_attendend', BooleanField()), Value(False), output_field=BooleanField())
-        ).filter(
-            Q(attendance__lesson_id=lesson_id) | Q(attendance__lesson_id=None)
+        students = Student.objects.filter(group_id=group.id)
+        queryset = students.annotate(
+            status=Case(
+                When(attendance__lesson_id=lesson_id, attendance__is_attendend=True, then=True),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
         ).order_by('student_name')
+
         return queryset
 
     def get_student_list(self, group_id, lesson_id, request):
@@ -152,11 +156,8 @@ class GroupAttendanceListView(APIView):
         students = self.get_queryset(group_id,lesson_id)
 
         for student in students:
-            try:
-                attendance_mark = Attendance.objects.get(student=student, lesson__id=lesson_id)
-                is_attendend_value = int(attendance_mark.is_attendend)
-            except Attendance.DoesNotExist:
-                is_attendend_value = 0
+            print(student.status)
+
 
             is_foreign_value = int(student.is_foreign)
 
@@ -165,7 +166,7 @@ class GroupAttendanceListView(APIView):
                 'id': student.student_id,
                 'is_foreign': is_foreign_value,
                 'group_id': group_id,
-                'status': is_attendend_value,
+                'status': int(student.status),
             }
             attendend_list.append(attendend_data)
 
@@ -183,6 +184,84 @@ class GroupAttendanceListView(APIView):
             return Response({'error':'You need to match ?lesson_id'},status=400)
 
         response_data = self.get_student_list(group_id, lesson_id, request)
+
+        if 'error' in response_data:
+            return Response(response_data, status=400)
+
+        return Response(response_data, status=200)
+
+class GroupAttendanceSubjectView(APIView):
+
+    def get_student_list(self,group_id :int,subject_id:int,date_start,date_end) -> dict:
+        tz = pytz.timezone('Europe/Moscow')
+        try:
+            date_start = tz.localize(datetime.strptime(str(date_start), '%Y-%m-%d')).date()
+            date_end = tz.localize(datetime.strptime(str(date_end), '%Y-%m-%d')).date()
+        except ValueError:
+            return Response({'error': f'Invalid date format: {date_start}\t{date_end}'}, status=400)
+        group = Group.objects.get(group_id=group_id)
+        subject = Subject.objects.get(id=subject_id)
+
+        lessons = Lesson.objects.filter(
+            subject__id=subject_id,
+            lesson_start_time__gte=date_start,
+            lesson_end_time__lte=date_end,
+            )
+
+        response_data = {
+            'group':{
+                'group_id':group.group_id,
+                'groupname':group.groupname,
+            },
+            'subject':{
+                'subject_name':subject.subject_name,
+                'subject_id':subject_id,
+                'teacher':{
+                    'teacher_id':subject.teacher.teacher_id,
+                    'teacher_name':subject.teacher.teacher_name,
+                }
+            },
+            'lessons':[]
+        }
+
+        for lesson in lessons:
+            r = requests.get(url=f'http://localhost:8000/api/v1/groups/{group_id}/attendance/?lesson_id={lesson.id}')
+            attendance_by_lesson = r.json()
+            lesson_start_date = lesson.lesson_start_time
+            lesson_data={
+                'lesson_id':lesson.id,
+                'lesson_start_date': lesson_start_date.date(),
+                'attendance_list':attendance_by_lesson,
+            }
+            response_data['lessons'].append(lesson_data)
+
+
+        return response_data
+
+        
+    def get(self, request, group_id,subject_id, format=None):
+        try:
+            group = Group.objects.get(group_id=group_id)
+        except Group.DoesNotExist:
+            return Response({'error': f'Group with id {group_id} not found'}, status=400)
+        #проверка существования предмета и группы
+        try:
+            subject = Subject.objects.get(id=subject_id)
+        except Subject.DoesNotExist:
+            return Response({'error': f'Subject with id {subject_id} not found'}, status=400)
+
+        date_start = request.query_params.get('date_start', None)
+        date_end = request.query_params.get('date_end', None)
+
+        #Проверка валидности времени
+        if not date_start:
+            date_start = datetime(year=datetime.today().year,month=1,day=1).date()
+
+        if not date_end:
+            date_end = datetime(year=datetime.today().year,month=12,day=31).date()
+
+        #получение данных для ответа
+        response_data = self.get_student_list(group_id, subject_id,date_start,date_end)
 
         if 'error' in response_data:
             return Response(response_data, status=400)

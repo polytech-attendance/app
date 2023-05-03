@@ -70,6 +70,7 @@ POST
       "lessons": [
         {
           "subject": "Теория графов",
+          "lesson_id":12,
           "subject_short": "Теория графов",
           "time_start": "11:00",
           "teacher": {
