@@ -151,12 +151,12 @@ class GroupAttendanceListView(APIView):
             return {"error": f"This lesson isn't group {group.groupname} ({group_id})"}
 
         attendend_list = []
-        print(group.id)
+        #print(group.id)
 
         students = self.get_queryset(group_id,lesson_id)
 
         for student in students:
-            print(student.status)
+            #print(student.status)
 
 
             is_foreign_value = int(student.is_foreign)
@@ -191,6 +191,35 @@ class GroupAttendanceListView(APIView):
         return Response(response_data, status=200)
 
 class GroupAttendanceSubjectView(APIView):
+    def get_mark_list(self,group_id:int,lesson_id:int)->[]:
+        attendend_list = []
+        # print(group.id)
+        group = Group.objects.get(group_id=group_id)
+        students = Student.objects.filter(group_id=group.id)
+        students = students.annotate(
+            status=Case(
+                When(attendance__lesson_id=lesson_id, attendance__is_attendend=True, then=True),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        ).order_by('student_name')
+
+        for student in students:
+            # print(student.status)
+
+            is_foreign_value = int(student.is_foreign)
+
+            attendend_data = {
+                'abbrev_name': student.student_name,
+                'id': student.student_id,
+                'is_foreign': is_foreign_value,
+                'group_id': group_id,
+                'status': int(student.status),
+            }
+            attendend_list.append(attendend_data)
+
+        # attendend_list.sort(key=lambda x: x['abbrev_name'])
+        return attendend_list
 
     def get_student_list(self,group_id :int,subject_id:int,date_start,date_end) -> dict:
         tz = pytz.timezone('Europe/Moscow')
@@ -225,8 +254,9 @@ class GroupAttendanceSubjectView(APIView):
         }
 
         for lesson in lessons:
-            r = requests.get(url=f'http://localhost:8000/api/v1/groups/{group_id}/attendance/?lesson_id={lesson.id}')
-            attendance_by_lesson = r.json()
+            #r = requests.get(url=f'http://localhost:8000/api/v1/groups/{group_id}/attendance/?lesson_id={lesson.id}')
+            r = self.get_mark_list(group_id,lesson.id)
+            attendance_by_lesson = r
             lesson_start_date = lesson.lesson_start_time
             lesson_data={
                 'lesson_id':lesson.id,
