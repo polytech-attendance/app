@@ -11,11 +11,11 @@
 
     async function sendStatus(status, studentId) {
         //send data to update attendance api
-        let response = await fetch('http::/api/api/data', {
+        let response = await fetch('/api/students?groupId=${groupId}', {
             method: 'post',
             body: JSON.stringify({
                 student_id: studentId,
-                student_status: status,
+                status: (status) ? 1 : 0,
                 date: date,
                 time: time,
                 class_id: classId,
@@ -30,18 +30,32 @@
         }
     }
 
-    let group = [];
+    let groupData;
 
-    onMount(async () => {
-        // TODO pass other parameters too, because need initial values for student.status
-        let response = await fetch(`/students?groupId=${groupId}`);
-        group = await response.json();
-    });
+    async function loadGroup() {
+
+        if (!groupData){
+            // TODO pass other parameters too, because need initial values for student.status
+            let response = await fetch(`students/?groupId=${groupId}`);
+            return await response.json();
+        }
+
+        else return groupData;
+    };
 
     const handleClick = (student) => async () => {
+
         student.status = !student.status;
-        await sendStatus(student.status, student.id);
-        group = group; // needed to update rows
+        await sendStatus(student.status, student.id)
+        .catch(err=> alert("Cannot save choice: "+err));
+
+        let element = document.getElementById(student.id);
+        if (element.classList.contains("absent")){
+            element.classList.remove("absent");
+        }
+        else element.classList.add("absent");
+
+        groupData = groupData; // needed to update 
     }
 </script>
 
@@ -59,22 +73,25 @@
                 <p>{date}</p>
                 <p>{time}</p>
             </div>
-            {#if (group.length === 0)}
-                <p>Список загружается...</p>
-            {:else}
-                <div class="modal-body">
-                    <div class="container">
-                        {#each group.students as student}
-                            <button class="btn row w-100" class:foreign={student.is_foreign}
-                                    class:absent={!student.status}
-                                    on:click={handleClick(student)}
-                                    id={student.id}>
-                                {student.student_name}
-                            </button>
-                        {/each}
-                    </div>
-                </div>
-            {/if}
+            <div class="modal-body">
+                {#await loadGroup()}
+                    <p>Список загружается...</p>
+                {:then group}
+                        <div class="container">
+                            {#each group.students as student}
+                                <button class="btn row w-100" class:foreign={student.is_foreign}
+                                        class:absent={!student.status}
+                                        on:click={handleClick(student)}
+                                        id={student.id}>
+                                    {student.student_name}
+                                </button>
+                            {/each}
+                        </div>
+                {:catch err}
+                    <p>Ошибка : {err}</p>
+                {/await}
+            </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
             </div>
