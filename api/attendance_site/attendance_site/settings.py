@@ -39,12 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'attendance.apps.AttendanceConfig',
     'rest_framework',
-
+    'corsheaders',
 ]
 
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,3 +134,12 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
+
+# see docs:
+# https://github.com/adamchainz/django-cors-headers#setup
+# also check out
+# https://stackoverflow.com/a/35761088/9385971
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173', # Svelte frontend port, change if needed
+    'http://127.0.0.1:5173',
+]
