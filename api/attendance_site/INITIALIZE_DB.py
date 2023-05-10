@@ -25,8 +25,8 @@ def init_db():
         'python manage.py migrate --run-syncdb',
         run_server_command,
         'python manage.py make_admin_user',
-        'python manage.py update_groups .\groups_data.csv',
-        'python manage.py update_students .\students_data.csv',
+        'python manage.py update_groups groups_data.csv',
+        'python manage.py update_students students_data.csv',
         'python manage.py update_subjects',
         'python manage.py update_lessons'
     ]
