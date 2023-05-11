@@ -4,7 +4,7 @@
     export let groupId;
     export let groupName;
     export let date;
-    export let classId;
+    export let lessonId;
     export let time;
 
     //studentList should get from the main page. Click each group leading to each
@@ -18,7 +18,7 @@
                 status: (status) ? 1 : 0,
                 date: date,
                 time: time,
-                class_id: classId,
+                class_id: lessonId,
                 group_id: groupId,
             }),
             headers: {
@@ -33,29 +33,18 @@
     let groupData;
 
     async function loadGroup() {
-
         if (!groupData){
-            // TODO pass other parameters too, because need initial values for student.status
-            let response = await fetch(`students/?groupId=${groupId}`);
+            let response = await fetch(`http://127.0.0.1:8000/api/v1/groups/${groupId}/attendance/?lesson_id=${lessonId}&format=json`);
             return await response.json();
         }
-
         else return groupData;
-    };
+    }
 
     const handleClick = (student) => async () => {
-
         student.status = !student.status;
         await sendStatus(student.status, student.id)
-        .catch(err=> alert("Cannot save choice: "+err));
-
-        let element = document.getElementById(student.id);
-        if (element.classList.contains("absent")){
-            element.classList.remove("absent");
-        }
-        else element.classList.add("absent");
-
-        groupData = groupData; // needed to update 
+            .catch(err=> alert("Cannot save choice: "+err));
+        groupData = groupData; // needed to update
     }
 </script>
 
@@ -91,7 +80,6 @@
                     <p>Ошибка : {err}</p>
                 {/await}
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
             </div>

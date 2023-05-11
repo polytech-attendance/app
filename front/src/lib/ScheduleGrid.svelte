@@ -14,7 +14,7 @@
 <div class="grid">
     {#each days as {lessons, weekday, date}}
         <div class="grid-day-header" style:grid-column={weekday}>{displayDate(weekday)} {date}</div>
-        {#each lessons as {subject, typeObj, time_start, time_end, name, teachers, groups}}
+        {#each lessons as {subject, typeObj, time_start, time_end, name, teachers, groups, id}}
             <div class="grid-item"
                  style:grid-column={weekday}
                  style:grid-row={gridRow(time_start)}
@@ -34,7 +34,7 @@
                 </div>
                 {/if}
                 {#each groups as {id, name}}
-                    <Checklist groupId={id} groupName={name} {date} classId={typeObj?.id ?? 0} time={time_start}/>
+                    <Checklist groupId={id} groupName={name} {date} lessonId={id} time={time_start}/>
                 {/each}
             </div>
         {/each}
