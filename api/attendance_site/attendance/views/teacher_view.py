@@ -144,6 +144,7 @@ class TeacherScheduleView(APIView):
 
                 lesson_data = {
                     'subject': daily_lesson.subject.subject_name,
+                    'id': daily_lesson.id,
                     'time_start': daily_lesson_time.strftime("%H:%M"),
                     'groups': daily_groups,
                 }
