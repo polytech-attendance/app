@@ -1,0 +1,250 @@
+1.
+/users
+
+GET
+POST
+
+2. Запрос для отображения сетки расписания
+   группы group_id=35427 на неделю 10 апреля 2023 по 16 апреля 2023.
+
+`GET api/v1/groups/35427/schedule/?date=2023-04-13`
+
+Дата -- любая между пн и вс (включительно).
+
+```json
+{
+  "week": {
+    "date_start": "2023-04-10",
+    "date_end": "2023-04-16",
+  },
+  "days": [
+    {
+      "weekday": 1,
+      "date": "2023-04-10",
+      "lessons": [
+        {
+          "subject": "Теория графов",
+          "subject_short": "Теория графов",
+          "time_start": "11:00",
+          "teacher": {
+            "id": 3549,
+            "full_name": "Востров Алексей Владимирович",
+            "first_name": "Востров",
+            "middle_name": "Алексей",
+            "last_name": "Владимирович",
+          },
+        },
+        ...
+      ]
+    },
+    {
+      "weekday": 2,
+      "date": "2023-04-11",
+      ...
+    }
+  ],
+  "group": {
+    "id": 35427,
+    "name": "3530201/10002"
+  }
+}
+```
+
+3. Запрос для отображения сетки расписания
+   препода teacher_id=3549 на неделю 10 апреля 2023 по 16 апреля 2023
+
+`GET api/v1/teachers/3549/schedule/?date=2023-04-13`
+
+Дата -- любая между пн и вс (включительно)
+
+```json
+{
+  "week": {
+    "date_start": "2023-04-10",
+    "date_end": "2023-04-16",
+  },
+  "days": [
+    {
+      "weekday": 1,
+      "date": "2023-04-10",
+      "lessons": [
+        {
+          "subject": "Теория графов",
+          "lesson_id":12,
+          "subject_short": "Теория графов",
+          "time_start": "11:00",
+          "teacher": {
+            "id": 3549,
+          },
+          "groups": [
+          {
+            "id": 35426,
+            "name": "3530201/10001",
+          },
+          {
+            "id": 35427,
+            "name": "3530201/10002",
+          },
+          ]
+        },
+        ...
+      ]
+    },
+    {
+      "weekday": 2,
+      "date": "2023-04-11",
+      ...
+    }
+  ],
+  "teacher": {
+    "id": 3549,
+    "full_name": "Востров Алексей Владимирович",
+    "first_name": "Востров",
+    "middle_name": "Алексей",
+    "last_name": "Владимирович",
+  }
+}
+```
+
+4. Получить все группы и предметы, которые ведёт препод с teacher_id=3549
+
+`GET /api/v1/teachers/3549/subjects`
+
+```json
+[
+  {
+    "subject": {
+      "id": 12,
+      "name": "Теория графов"
+    },
+    "groups": [
+      {
+        "id": 35426,
+        "name": "3530201/10001"
+      },
+      {
+        "id": 35427,
+        "name": "3530201/10002"
+      }
+    ]
+  },
+  {
+    "subject": {
+      "id": 34,
+      "name": "Теория алгоритмов",
+    },
+    "groups": [
+      {
+         "id": 35455,
+         "name": "3530201/00101"
+      }
+    ]
+  }
+]
+```
+
+5.1 Отметить посещаемость студента student_id=755 на паре lesson_id=341.
+
+Запрос:
+
+```
+POST /api/v1/attendance
+
+{
+  "lesson_id": 341,
+  "student_id": 755,
+  "status": 1
+}
+```
+
+Ответ:
+
+```
+200 OK
+```
+
+5.2 Отметить студента student_id=755 на паре lesson_id=341 как не посетившего.
+
+Запрос:
+
+```
+POST /api/v1/attendance
+
+{
+  "lesson_id": 341,
+  "student_id": 755,
+  "status": 0
+}
+```
+
+Ответ:
+
+```
+200 OK
+```
+
+6. Получить таблицу посещаемости занятия lesson_id=341 группой group_id=35426.
+
+Дата в запросе не нужна, т.к. она определяется lesson_id.
+Порядок запиcей в списке --- алфавитный по фамилии, имени, отчеству.
+
+Запрос:
+
+`GET api/v1/groups/35426/attendance/?lesson_id=341`
+
+Ответ:
+
+```json
+{
+  "students": [
+    {
+      "abbrev_name": "Иванов И. И.",
+      "id": 2345362,
+      "is_foreign": 0,
+      "group_id": 35361,
+      "status": 0
+    },
+    {
+      "abbrev_name": "Иванова И. И.",
+      "id": 2345363,
+      "is_foreign": 0,
+      "group_id": 35361,
+      "status": 0
+    },
+    ...
+  ]
+}
+```
+
+
+6*
+Table attendance for subject and group from date_start to date_end
+http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/?date_start=YY-MM-DD&date_end=YY-MM-DD
+http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/
+{
+    "group": {
+        "group_id": 35426,
+        "groupname": "3530201/10001"
+    },
+    "subject": {
+        "subject_name": "Программирование микроконтроллеров",
+        "subject_id": 15,
+        "teacher": {
+            "teacher_id": "6083",
+            "teacher_name": "Вербова Наталья Михайловна"
+        }
+    },
+    "lessons": [
+            {
+            "lesson_id": 22,
+            "lesson_start_date": "2023-05-02",
+            "attendance_list": [ {
+                    "abbrev_name": " Алехичев А. В.",
+                    "id": 21350408,
+                    "is_foreign": 0,
+                    "group_id": 35426,
+                    "status": 0
+                },
+                ...
+                ]
+    ]
