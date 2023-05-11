@@ -23,7 +23,9 @@ class Command(BaseCommand):
             lesson_manager = Lesson.objects
 
             for item in items:
-                subject = Subject.objects.get(subject_name=item['subject_name'], group=group)
+                teacher = Teacher.objects.get(teacher_id=item['teacher_id'])
+                subject = Subject.objects.get(subject_name=item['subject_name'], group__group_id=group.group_id,
+                                              teacher=teacher)
 
                 lesson_start_time = tz.localize(datetime.strptime(item['lesson_start_time'], '%Y-%m-%d %H:%M:%S'))
                 lesson_end_time = tz.localize(datetime.strptime(item['lesson_end_time'], '%Y-%m-%d %H:%M:%S'))
