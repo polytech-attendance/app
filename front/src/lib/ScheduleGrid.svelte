@@ -33,8 +33,8 @@
                     {/each}
                 </div>
                 {/if}
-                {#each groups as {id, name}}
-                    <Checklist groupId={id} groupName={name} {date} lessonId={id} time={time_start}/>
+                {#each groups as g}
+                    <Checklist groupId={g.id} groupName={g.name} {date} lessonId={id} time={time_start}/>
                 {/each}
             </div>
         {/each}

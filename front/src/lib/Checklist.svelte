@@ -33,11 +33,8 @@
     let groupData;
 
     async function loadGroup() {
-        if (!groupData){
-            let response = await fetch(`http://127.0.0.1:8000/api/v1/groups/${groupId}/attendance/?lesson_id=${lessonId}&format=json`);
-            return await response.json();
-        }
-        else return groupData;
+        let response = await fetch(`http://127.0.0.1:8000/api/v1/groups/${groupId}/attendance/?lesson_id=${lessonId}&format=json`);
+        return response.json();
     }
 
     const handleClick = (student) => async () => {
