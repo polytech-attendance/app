@@ -1,5 +1,6 @@
 # Запуск Backend
 
+0. Убедитесь, что Python установлен: `python --version` должен выдавать `Python 3.11.3` или что-то похожее.
 1. Установить виртуальное окружение Python `python -m venv ./venv/` (выполняется в корне проекта — в папке `app`)
 2. Выполнить `cd ./api && pip install -r requirements.txt`:
    подтянуть зависимости (команда `pip install` выполняется в папке `api`)
