@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from attendance.views.group_view import GroupAPIView, GroupScheduleView, GroupItemView,GroupAttendanceListView,GroupAttendanceSubjectView
+from attendance.views.group_view import GroupAPIView, GroupScheduleView, GroupItemView, GroupAttendanceListView, \
+    GroupAttendanceSubjectView
 from attendance.views.user_view import UserAPIView
 from attendance.views.teacher_view import TeacherAPIView, TeacherScheduleView
 from attendance.views.subject_view import SubjectAPIView
@@ -27,18 +28,19 @@ from rest_framework import routers
 
 apiTAG = 'api/v1/'
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(f'{apiTAG}users/',UserAPIView.as_view()),
-    path(f'{apiTAG}teachers/',TeacherAPIView.as_view()),
+    path(f'{apiTAG}users/', UserAPIView.as_view()),
+    path(f'{apiTAG}teachers/', TeacherAPIView.as_view()),
     path(f'{apiTAG}teachers/<int:teacher_id>/schedule/', TeacherScheduleView.as_view(), name='Teacher schedule'),
-    path(f'{apiTAG}subjects/',SubjectAPIView.as_view()),
-    path(f'{apiTAG}groups/', GroupAPIView.as_view(),name='Groups list'),
+    path(f'{apiTAG}subjects/', SubjectAPIView.as_view()),
+    path(f'{apiTAG}groups/', GroupAPIView.as_view(), name='Groups list'),
     path(f'{apiTAG}groups/<int:group_id>/schedule/', GroupScheduleView.as_view(), name='Group week schedule'),
     path(f'{apiTAG}groups/<int:group_id>/', GroupItemView.as_view(), name='Group by id'),
-    path(f'{apiTAG}groups/<int:group_id>/attendance/', GroupAttendanceListView.as_view(), name='Attendance by lesson id'),
-    path(f'{apiTAG}groups/<int:group_id>/attendance/<int:subject_id>/',GroupAttendanceSubjectView.as_view(),name='Attendance by subject'),
-    path(f'{apiTAG}attendance',AttendanceView.as_view(),name='Mark students as attend or not'),
+    path(f'{apiTAG}groups/<int:group_id>/attendance/', GroupAttendanceListView.as_view(),
+         name='Attendance by lesson id'),
+    path(f'{apiTAG}groups/<int:group_id>/attendance/<int:subject_id>/', GroupAttendanceSubjectView.as_view(),
+         name='Attendance by subject'),
+    path(f'{apiTAG}attendance', AttendanceView.as_view(), name='Mark students as attend or not'),
 
 ]
