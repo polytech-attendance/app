@@ -150,6 +150,23 @@ class GroupAttendanceListView(APIView):
             return  {"error": f"This lesson doesnt exist!"}
         subject = lesson.subject
 
+        #when subject_name and lesson_start time is equal
+        lessons_tmp = Lesson.objects.filter(
+            subject__subject_name=subject.subject_name,
+            lesson_start_time=lesson.lesson_start_time,
+        )
+
+        print(len(list(lessons_tmp)))
+        print(group)
+        #switch subject
+        for l in lessons_tmp:
+            print(l.subject.group)
+            if l.subject.group == group:
+                subject = l.subject
+                print('find match!')
+                break
+
+
         if subject.group != group:
             return {"error": f"This lesson isn't group {group.groupname} ({group_id})"}
 
