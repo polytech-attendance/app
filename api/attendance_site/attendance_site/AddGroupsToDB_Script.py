@@ -5,7 +5,7 @@ import sqlite3
 db = sqlite3.connect('db.sqlite3')
 
 # Открытие файла и чтение данных в формате CSV
-with open('students23march2023telematics.csv', newline='') as csvfile:
+with open('data.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     # Итерация по строкам и загрузка данных в базу данных
     for row in reader:

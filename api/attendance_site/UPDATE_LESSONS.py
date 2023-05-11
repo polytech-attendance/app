@@ -1,8 +1,7 @@
 import os
 import subprocess
 
-# Удаление файла db.sqlite3
-os.remove('db.sqlite3')
+
 
 # Список команд для выполнения
 commands = [

@@ -79,7 +79,7 @@ class GroupScheduleView(APIView):
 
             subject_data = {
                 'subject': subject_by_lesson.subject_name,
-                'lesson_id':lesson.id,
+                'lesson_id': lesson.id,
                 'time_start': lesson_data.get('lesson_start_time')[11:16],
                 # datetime.strptime(lesson_data.get('lesson_start_time')[11:16],'%H:%M'),
                 'teacher': teacher_data,
@@ -134,8 +134,8 @@ class GroupAttendanceListView(APIView):
         students = Student.objects.filter(group_id=group.id)
         queryset = students.annotate(
             status=Case(
-                When(attendance__lesson_id=lesson_id, attendance__is_attendend=True, then=True),
-                default=Value(False),
+                When(attendance__lesson_id=lesson_id, attendance__is_attendend=False, then=False),
+                default=Value(True),
                 output_field=BooleanField(),
             )
         ).order_by('student_name')
@@ -151,13 +151,12 @@ class GroupAttendanceListView(APIView):
             return {"error": f"This lesson isn't group {group.groupname} ({group_id})"}
 
         attendend_list = []
-        #print(group.id)
+        # print(group.id)
 
-        students = self.get_queryset(group_id,lesson_id)
+        students = self.get_queryset(group_id, lesson_id)
 
         for student in students:
-            #print(student.status)
-
+            # print(student.status)
 
             is_foreign_value = int(student.is_foreign)
 
@@ -170,7 +169,7 @@ class GroupAttendanceListView(APIView):
             }
             attendend_list.append(attendend_data)
 
-        #attendend_list.sort(key=lambda x: x['abbrev_name'])
+        # attendend_list.sort(key=lambda x: x['abbrev_name'])
         return attendend_list
 
     def get(self, request, group_id, format=None):
@@ -181,7 +180,7 @@ class GroupAttendanceListView(APIView):
 
         lesson_id = request.query_params.get('lesson_id', None)
         if lesson_id is None:
-            return Response({'error':'You need to match ?lesson_id'},status=400)
+            return Response({'error': 'You need to match ?lesson_id'}, status=400)
 
         response_data = self.get_student_list(group_id, lesson_id, request)
 
@@ -190,16 +189,17 @@ class GroupAttendanceListView(APIView):
 
         return Response(response_data, status=200)
 
+
 class GroupAttendanceSubjectView(APIView):
-    def get_mark_list(self,group_id:int,lesson_id:int)->[]:
+    def get_mark_list(self, group_id: int, lesson_id: int) -> []:
         attendend_list = []
         # print(group.id)
         group = Group.objects.get(group_id=group_id)
         students = Student.objects.filter(group_id=group.id)
-        students = students.annotate(
+        queryset = students.annotate(
             status=Case(
-                When(attendance__lesson_id=lesson_id, attendance__is_attendend=True, then=True),
-                default=Value(False),
+                When(attendance__lesson_id=lesson_id, attendance__is_attendend=False, then=False),
+                default=Value(True),
                 output_field=BooleanField(),
             )
         ).order_by('student_name')
@@ -221,7 +221,7 @@ class GroupAttendanceSubjectView(APIView):
         # attendend_list.sort(key=lambda x: x['abbrev_name'])
         return attendend_list
 
-    def get_student_list(self,group_id :int,subject_id:int,date_start,date_end) -> dict:
+    def get_student_list(self, group_id: int, subject_id: int, date_start, date_end) -> dict:
         tz = pytz.timezone('Europe/Moscow')
         try:
             date_start = tz.localize(datetime.strptime(str(date_start), '%Y-%m-%d')).date()
@@ -234,47 +234,45 @@ class GroupAttendanceSubjectView(APIView):
         lessons = Lesson.objects.filter(
             subject__id=subject_id,
             lesson_start_time__gte=date_start,
-            lesson_end_time__lte=date_end,
-            )
+            lesson_start_time__lte=date_end,
+        )
 
         response_data = {
-            'group':{
-                'group_id':group.group_id,
-                'groupname':group.groupname,
+            'group': {
+                'group_id': group.group_id,
+                'groupname': group.groupname,
             },
-            'subject':{
-                'subject_name':subject.subject_name,
-                'subject_id':subject_id,
-                'teacher':{
-                    'teacher_id':subject.teacher.teacher_id,
-                    'teacher_name':subject.teacher.teacher_name,
+            'subject': {
+                'subject_name': subject.subject_name,
+                'subject_id': subject_id,
+                'teacher': {
+                    'teacher_id': subject.teacher.teacher_id,
+                    'teacher_name': subject.teacher.teacher_name,
                 }
             },
-            'lessons':[]
+            'lessons': []
         }
 
         for lesson in lessons:
-            #r = requests.get(url=f'http://localhost:8000/api/v1/groups/{group_id}/attendance/?lesson_id={lesson.id}')
-            r = self.get_mark_list(group_id,lesson.id)
+            # r = requests.get(url=f'http://localhost:8000/api/v1/groups/{group_id}/attendance/?lesson_id={lesson.id}')
+            r = self.get_mark_list(group_id, lesson.id)
             attendance_by_lesson = r
             lesson_start_date = lesson.lesson_start_time
-            lesson_data={
-                'lesson_id':lesson.id,
+            lesson_data = {
+                'lesson_id': lesson.id,
                 'lesson_start_date': lesson_start_date.date(),
-                'attendance_list':attendance_by_lesson,
+                'attendance_list': attendance_by_lesson,
             }
             response_data['lessons'].append(lesson_data)
 
-
         return response_data
 
-        
-    def get(self, request, group_id,subject_id, format=None):
+    def get(self, request, group_id, subject_id, format=None):
         try:
             group = Group.objects.get(group_id=group_id)
         except Group.DoesNotExist:
             return Response({'error': f'Group with id {group_id} not found'}, status=400)
-        #проверка существования предмета и группы
+        # проверка существования предмета и группы
         try:
             subject = Subject.objects.get(id=subject_id)
         except Subject.DoesNotExist:
@@ -283,15 +281,15 @@ class GroupAttendanceSubjectView(APIView):
         date_start = request.query_params.get('date_start', None)
         date_end = request.query_params.get('date_end', None)
 
-        #Проверка валидности времени
+        # Проверка валидности времени
         if not date_start:
-            date_start = datetime(year=datetime.today().year,month=1,day=1).date()
+            date_start = datetime(year=datetime.today().year, month=1, day=1).date()
 
         if not date_end:
-            date_end = datetime(year=datetime.today().year,month=12,day=31).date()
+            date_end = datetime(year=datetime.today().year, month=12, day=31).date()
 
-        #получение данных для ответа
-        response_data = self.get_student_list(group_id, subject_id,date_start,date_end)
+        # получение данных для ответа
+        response_data = self.get_student_list(group_id, subject_id, date_start, date_end)
 
         if 'error' in response_data:
             return Response(response_data, status=400)
