@@ -1,11 +1,12 @@
 <script>
     import ScheduleGrid from "$lib/ScheduleGrid.svelte";
-    import Sidebar from "../lib/Sidebar.svelte";
+    // import Sidebar from "../lib/Sidebar.svelte";
+
     /** @type {import('./$types').PageData} */
     export let data;
 </script>
 <div id="main-layout">
-    <Sidebar mainId="main-area"/>
+<!--    <Sidebar mainId="main-area"/>-->
     <div id="main-area">
         <div class="topnav">
             <p class="greeting"> Здравствуйте, {data.teacher.full_name}!</p>

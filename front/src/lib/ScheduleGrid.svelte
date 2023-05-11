@@ -22,17 +22,19 @@
                 <div class="subject">{subject}</div>
                 <div>
                     <span class="time">{time_start}</span>
-                    <span class="lesson-type">{typeObj.name}</span>
+<!--                    <span class="lesson-type">{typeObj.name}</span>-->
                 </div>
-                <div class="teachers">
+                {#if teachers}
+                    <div class="teachers">
                     {#each teachers as teacher}
                         <div class="teacher">
                             {teacher == null ? "" : teacher.full_name}
                         </div>
                     {/each}
                 </div>
+                {/if}
                 {#each groups as {id, name}}
-                    <Checklist groupId={id} groupName={name} {date} classId={typeObj.id} time={time_start}/>
+                    <Checklist groupId={id} groupName={name} {date} classId={typeObj?.id ?? 0} time={time_start}/>
                 {/each}
             </div>
         {/each}
