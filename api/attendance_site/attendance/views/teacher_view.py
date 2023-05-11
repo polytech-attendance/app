@@ -138,7 +138,7 @@ class TeacherScheduleView(APIView):
                     group_from_db=Group.objects.get(id=tmp_group)
                     group_data={
                         'id':group_from_db.group_id,
-                        'groupname':group_from_db.groupname,
+                        'name':group_from_db.groupname,
                     }
                     daily_groups.append(group_data)
 
