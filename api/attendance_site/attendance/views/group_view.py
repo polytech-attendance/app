@@ -204,7 +204,7 @@ class GroupAttendanceSubjectView(APIView):
             )
         ).order_by('student_name')
 
-        for student in students:
+        for student in queryset:
             # print(student.status)
 
             is_foreign_value = int(student.is_foreign)
