@@ -144,7 +144,10 @@ class GroupAttendanceListView(APIView):
 
     def get_student_list(self, group_id, lesson_id, request):
         group = Group.objects.get(group_id=group_id)
-        lesson = Lesson.objects.get(id=lesson_id)
+        try:
+            lesson = Lesson.objects.get(id=lesson_id)
+        except Lesson.DoesNotExist:
+            return  {"error": f"This lesson doesnt exist!"}
         subject = lesson.subject
 
         if subject.group != group:

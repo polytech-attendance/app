@@ -217,7 +217,7 @@ POST /api/v1/attendance
 ```
 
 
-6*
+6* (+)
 Table attendance for subject and group from date_start to date_end
 http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/?date_start=YY-MM-DD&date_end=YY-MM-DD
 http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/
