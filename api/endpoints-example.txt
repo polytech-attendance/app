@@ -24,14 +24,11 @@ POST
       "lessons": [
         {
           "subject": "Теория графов",
-          "subject_short": "Теория графов",
           "time_start": "11:00",
+          "lesson_id" : 228,
           "teacher": {
             "id": 3549,
             "full_name": "Востров Алексей Владимирович",
-            "first_name": "Востров",
-            "middle_name": "Алексей",
-            "last_name": "Владимирович",
           },
         },
         ...
