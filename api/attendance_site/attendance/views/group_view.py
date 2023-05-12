@@ -151,23 +151,21 @@ class GroupAttendanceListView(APIView):
         subject = lesson.subject
 
         #when subject_name and lesson_start time is equal
-        lessons_tmp = Lesson.objects.get(
-            subject__subject_name=subject.subject_name,
-            lesson_start_time=lesson.lesson_start_time,
-            lesson__subject=subject,
-        )
+
+        print(group)
+
+
         try:
             lessons_tmp = Lesson.objects.get(
                 subject__subject_name=subject.subject_name,
                 lesson_start_time=lesson.lesson_start_time,
-                lesson__subject=subject,
+                subject__group=group,
             )
             subject=lessons_tmp.subject
         except:
             return {'error':'Unexcepted error'}
 
 
-        print(len(list(lessons_tmp)))
         print(group)
         #switch subject
         '''
