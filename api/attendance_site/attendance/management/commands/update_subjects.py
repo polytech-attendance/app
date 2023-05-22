@@ -3,20 +3,23 @@ import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from attendance.models import Subject, Group, Teacher
-from attendance.auxiliary.fill_subjects import get_subject_cur_week
+from attendance.auxiliary.fill_subjects import get_subject_week
 from attendance.auxiliary.find_teacher_by_id import get_teacher_by_id
 
 from .make_new_user import make_new_user
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument('start_date', type=str, help='Start date in YYYY-MM-DD format')
     def handle(self, *args, **options):
-
+        start_date_str = options['start_date']
+        self.stdout.write(f"Start date: {start_date_str}")
         # Получить данные из стороннего API
         changes_count = 0
         groups = Group.objects.all()
         for group in groups:
-            items = get_subject_cur_week(group.group_id)
+            items = get_subject_week(group.group_id)
 
             # Добавление предметов в базу данных
             subject_manager = Subject.objects

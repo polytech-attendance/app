@@ -41,6 +41,33 @@ class SubjectSerializer(serializers.ModelSerializer):
         model = Subject
         fields = ('id', 'group', 'teacher', 'subject_name')
 
+    def get_group(self, obj):
+        group = obj.group
+        return {
+            'group_id': group.group_id,
+            'groupname': group.groupname,
+            'groupleader_id': group.groupleader_id
+        }
+
+class SubjectWithoutTeacher(serializers.ModelSerializer):
+    group = GroupSerializer()
+    class Meta:
+        model = Subject
+        fields = ('id', 'group', 'subject_name')
+
+    def get_group(self, obj):
+        group = obj.group
+        return {
+            'group_id': group.group_id,
+            'groupname': group.groupname,
+            'groupleader_id': group.groupleader_id
+        }
+
+class SubjectsResponseSerializer(serializers.Serializer):
+    teacher = TeacherSerializer()
+    subjects = SubjectWithoutTeacher(many=True)
+
+
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson

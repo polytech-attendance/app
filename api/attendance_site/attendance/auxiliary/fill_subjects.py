@@ -1,7 +1,12 @@
+import datetime
 import json
 import requests
 
-def get_subject_cur_week(group_id : int):
+
+def get_subject_week(group_id: int, date=None):
+    if date is None:
+        date = datetime.datetime.today()
+
     r = requests.get(f'https://ruz.spbstu.ru/api/v1/ruz/scheduler/{group_id}')
 
     j = r.json()
@@ -21,13 +26,12 @@ def get_subject_cur_week(group_id : int):
             if not item['subject_name'] in subject_set:
                 subject_set.add(item['subject_name'])
                 lst_sbj.append(item)
-            #print(item)
+            # print(item)
 
     # print(log)
     # print(subject_set)
     # print(lst_sbj)
     return lst_sbj
-
 
 
 '''
@@ -41,5 +45,4 @@ for day in days:
 
 if __name__ == '__main__':
     group_id = 35426
-    print(get_subject_cur_week(group_id))
-
+    print(get_subject_week(group_id))
