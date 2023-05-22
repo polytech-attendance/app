@@ -5,8 +5,7 @@ from django.core.management.base import BaseCommand
 from attendance.models import Subject, Group, Teacher
 from attendance.auxiliary.fill_subjects import get_subject_week
 from attendance.auxiliary.find_teacher_by_id import get_teacher_by_id
-from attendance.auxiliary.get_start_of_week_date import get_start_of_week_date
-
+#from attendance.auxiliary.get_start_of_week_date import get_start_of_week_date
 from .make_new_user import make_new_user
 
 
