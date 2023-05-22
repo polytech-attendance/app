@@ -12,7 +12,7 @@
         .map((s, i) => ({student: s, data: lessons
                 .map(les => ({lessonId: les.id, ...les.attendance_list[i]}))}))
 
-    var change_attendance = (studentId, lessonId) => (async e =>  {
+    const change_attendance = (studentId, lessonId) => (async e => {
         let response = await fetch('http://127.0.0.1:8000/api/v1/attendance', {
             method: 'post',
             body: JSON.stringify({
@@ -54,7 +54,7 @@
     {#each attendance_data as {student, data} (student.id)}
         <tr>
             <th class:foreign={student.is_foreign}>{student.abbrev_name}</th>
-            {#each data as {id, status, lessonId} (id)}
+            {#each data as {id, status, lessonId} (lessonId)}
                 <td><input type="checkbox" checked={status} on:change={change_attendance(id, lessonId)}></td>
             {/each}
         </tr>
