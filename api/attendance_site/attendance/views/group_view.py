@@ -163,7 +163,7 @@ class GroupAttendanceListView(APIView):
 
         print(group)
 
-
+        '''
         try:
             lessons_tmp = Lesson.objects.get(
                 subject__subject_name=subject.subject_name,
@@ -171,9 +171,10 @@ class GroupAttendanceListView(APIView):
                 subject__group=group,
             )
             subject=lessons_tmp.subject
-        except:
+        except Lesson.DoesNotExist as ex:
+            print("An exception occurred:", ex)
             return {'error':'Unexcepted error'}
-
+        '''
 
         print(group)
         #switch subject
