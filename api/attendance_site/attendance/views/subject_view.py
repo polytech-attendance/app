@@ -1,11 +1,11 @@
 from datetime import datetime
 
 import pytz
-from django.db.models import When, Case, BooleanField, Value
+from django.db.models import When, Case, BooleanField, Value, Exists, OuterRef
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from attendance.models import Subject, Teacher, Group, Student, Lesson
+from attendance.models import Subject, Teacher, Group, Student, Lesson, Attendance
 from attendance.serializers import SubjectSerializer, SubjectsResponseSerializer
 from rest_framework import generics
 
@@ -36,9 +36,21 @@ class SubjectAttendanceView(APIView):
         # print(group.id)
         group = Group.objects.get(group_id=group_id)
         students = Student.objects.filter(group_id=group.id)
+
+        default_value = True  # Значение по умолчанию
+
         queryset = students.annotate(
             status=Case(
-                When(attendance__lesson_id=lesson_id, attendance__is_attendend=False, then=False),
+                When(
+                    Exists(
+                        Attendance.objects.filter(
+                            student=OuterRef('student_id'),
+                            lesson_id=lesson_id,
+                            is_attendend=False,
+                        )
+                    ),
+                    then=Value(False),
+                ),
                 default=Value(True),
                 output_field=BooleanField(),
             )
