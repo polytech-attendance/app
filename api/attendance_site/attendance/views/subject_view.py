@@ -90,7 +90,7 @@ class SubjectAttendanceView(APIView):
             subject__id=subject_id,
             lesson_start_time__gte=date_start,
             lesson_start_time__lte=date_end,
-        )
+        ).order_by('lesson_start_time')
 
         student_list=[]
         # put students list into group->student_list
@@ -137,12 +137,12 @@ class SubjectAttendanceView(APIView):
             attendance_by_lesson = r
 
 
-
-            lesson_start_date = lesson.lesson_start_time
+            tz = pytz.timezone('Europe/Moscow')
+            lesson_start_date = lesson.lesson_start_time.astimezone(tz)
             lesson_data = {
                 'id': lesson.id,
                 'start_date': lesson_start_date.date(),
-                'start_time': lesson.lesson_start_time,
+                'start_time': lesson_start_date.time(),
                 'attendance_list': attendance_by_lesson,
             }
             response_data['lessons'].append(lesson_data)
