@@ -142,6 +142,7 @@ class SubjectAttendanceView(APIView):
             lesson_data = {
                 'id': lesson.id,
                 'start_date': lesson_start_date.date(),
+                'start_time': lesson.lesson_start_time,
                 'attendance_list': attendance_by_lesson,
             }
             response_data['lessons'].append(lesson_data)
