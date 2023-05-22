@@ -20,7 +20,7 @@
                  style:grid-row={gridRow(time_start)}
             >
                 <div class="subject">{subject}</div>
-                <div>
+                <div class="last-item-element">
                     <span class="time">{time_start}</span>
 <!--                    <span class="lesson-type">{typeObj.name}</span>-->
                 </div>
@@ -31,10 +31,10 @@
                             {teacher == null ? "" : teacher.full_name}
                         </div>
                     {/each}
-                </div>
+                    </div>
                 {/if}
                 {#each groups as g}
-                    <Checklist groupId={g.id} groupName={g.name} {date} lessonId={id} time={time_start}/>
+                    <Checklist groupId={g.id} groupName={g.name} {date} lessonId={id} time={time_start} class="group-btn"/>
                 {/each}
             </div>
         {/each}
@@ -83,8 +83,15 @@
         border-radius: 4px;
         padding: 5px;
         background-color: var(--bs-purple);
-        gap: 10px;
+    }
+
+    .grid-item {
         display: flex;
         flex-direction: column;
+        gap: 10px;
+    }
+
+    .last-item-element {
+        margin-bottom: auto;
     }
 </style>

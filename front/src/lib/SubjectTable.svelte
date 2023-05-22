@@ -38,7 +38,7 @@
     <tbody>
     {#each lessons as lesson (lesson.id)}
         <tr>
-            <th>{lesson.start_date}</th>
+            <th>{lesson.start_date} {lesson.start_time}</th>
             {#each lesson.attendance_list as {id, status} (id)}
                 <td><input type="checkbox" checked={status} on:change={change_attendance(id, lesson.id)}></td>
             {/each}
