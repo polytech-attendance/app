@@ -8,6 +8,10 @@
     export let lessons;
     export let studentList;
 
+    $:attendance_data = studentList
+        .map((s, i) => ({student: s, data: lessons
+                .map(les => ({lessonId: les.id, ...les.attendance_list[i]}))}))
+
     var change_attendance = (studentId, lessonId) => (async e =>  {
         let response = await fetch('http://127.0.0.1:8000/api/v1/attendance', {
             method: 'post',
@@ -41,17 +45,17 @@
     <thead>
         <tr>
             <th>ФИО</th>
-            {#each studentList as {abbrev_name, id, is_foreign} (id)}
-                <td class:foreign={is_foreign}>{abbrev_name}</td>
-            {/each}
+        {#each lessons as lesson (lesson.id)}
+            <th>{displayDateTime(lesson.start_iso_time)}</th>
+        {/each}
         </tr>
     </thead>
     <tbody>
-    {#each lessons as lesson (lesson.id)}
+    {#each attendance_data as {student, data} (student.id)}
         <tr>
-            <th>{displayDateTime(lesson.start_iso_time)}</th>
-            {#each lesson.attendance_list as {id, status} (id)}
-                <td><input type="checkbox" checked={status} on:change={change_attendance(id, lesson.id)}></td>
+            <th class:foreign={student.is_foreign}>{student.abbrev_name}</th>
+            {#each data as {id, status, lessonId} (id)}
+                <td><input type="checkbox" checked={status} on:change={change_attendance(id, lessonId)}></td>
             {/each}
         </tr>
     {/each}
@@ -62,17 +66,12 @@
     table thead, table tbody {
         display: contents;
     }
-    table {
-        display: table;
-    }
-    table tr {
-        display: table-cell;
-    }
-    table tr td {
-        display: block;
-    }
-
     .foreign::after {
         content: '*'
+    }
+    table {
+        display: block;
+        overflow-x: scroll;
+        /*white-space: nowrap;*/
     }
 </style>
