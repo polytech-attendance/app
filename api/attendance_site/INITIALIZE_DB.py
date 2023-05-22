@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+from UPDATE_LESSONS import update_lessons
 
 
 def init_db():
@@ -27,8 +28,8 @@ def init_db():
         'python manage.py make_admin_user',
         'python manage.py update_groups groups_data.csv',
         'python manage.py update_students students_data.csv',
-        'python manage.py update_subjects',
-        'python manage.py update_lessons'
+        # 'python manage.py update_subjects',
+        # 'python manage.py update_lessons',
     ]
 
     # Выполнение команд по порядку
@@ -41,6 +42,7 @@ def init_db():
 if __name__ == '__main__':
     print('Starting initialize DB')
     if init_db():
+        update_lessons()
         print('DB succesfully initialize')
     else:
         print('DB initialize interrupted')
