@@ -2,7 +2,6 @@ import os
 import subprocess
 
 
-
 # Список команд для выполнения
 commands = [
     'python manage.py update_subjects',
