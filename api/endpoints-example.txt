@@ -218,6 +218,8 @@ POST /api/v1/attendance
 Table attendance for subject and group from date_start to date_end
 http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/?date_start=YY-MM-DD&date_end=YY-MM-DD
 http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/
+
+запрос чтобы получить всю посещаемость по предмету
 {
     "group": {
         "group_id": 35426,
@@ -245,3 +247,35 @@ http://127.0.0.1:8000/api/v1/groups/35426/attendance/15/
                 ...
                 ]
     ]
+
+
+
+http://127.0.0.1:8000/api/v1/teachers/7683/subjects/
+#получить предметы преподавателя
+{
+    "teacher": {
+        "user_id": 2,
+        "teacher_name": "Глазунов Вадим Валерьевич",
+        "teacher_id": "7683"
+    },
+    "subjects": [
+        {
+            "id": 1,
+            "group": {
+                "group_id": 35361,
+                "groupname": "3530201/20001",
+                "groupleader_id": 1
+            },
+            "subject_name": "Программирование и алгоритмизация"
+        },
+        {
+            "id": 8,
+            "group": {
+                "group_id": 35362,
+                "groupname": "3530201/20002",
+                "groupleader_id": 1
+            },
+            "subject_name": "Программирование и алгоритмизация"
+        }
+    ]
+}

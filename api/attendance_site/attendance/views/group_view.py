@@ -257,9 +257,12 @@ class GroupAttendanceSubjectView(APIView):
             date_start = tz.localize(datetime.strptime(str(date_start), '%Y-%m-%d')).date()
             date_end = tz.localize(datetime.strptime(str(date_end), '%Y-%m-%d')).date()
         except ValueError:
-            return Response({'error': f'Invalid date format: {date_start}\t{date_end}'}, status=400)
+            return {'error': f'Invalid date format: {date_start}    {date_end} (need to YYYY-MM-DD)'}
         group = Group.objects.get(group_id=group_id)
         subject = Subject.objects.get(id=subject_id)
+
+        if subject.group != group:
+            return {'error': f'Subject {subject.subject_name} ({subject_id}) not for group: {group.groupname} ({group})'}
 
         lessons = Lesson.objects.filter(
             subject__id=subject_id,

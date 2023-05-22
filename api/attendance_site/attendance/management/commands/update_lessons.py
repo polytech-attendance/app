@@ -7,6 +7,8 @@ import pytz
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+
+
         tz = pytz.timezone('Europe/Moscow')
         # Получить данные из стороннего API
         changes_count = 0
