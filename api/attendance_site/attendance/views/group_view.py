@@ -290,10 +290,12 @@ class GroupAttendanceSubjectView(APIView):
             # r = requests.get(url=f'http://localhost:8000/api/v1/groups/{group_id}/attendance/?lesson_id={lesson.id}')
             r = self.get_mark_list(group_id, lesson.id)
             attendance_by_lesson = r
-            lesson_start_date = lesson.lesson_start_time
+
+            lesson_start_date = lesson.lesson_start_time.astimezone(tz)
             lesson_data = {
                 'lesson_id': lesson.id,
-                'lesson_start_date': lesson_start_date.date(),
+                'start_iso_time':lesson_start_date,
+                #'lesson_start_date': lesson_start_date.date(),
                 'attendance_list': attendance_by_lesson,
             }
             response_data['lessons'].append(lesson_data)
