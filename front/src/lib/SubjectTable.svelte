@@ -24,6 +24,17 @@
             throw error('Can\'t update attendance');
         }
     })
+
+    const displayDateTime = start_iso_time => (
+        new Date(Date.parse(start_iso_time))
+            .toLocaleDateString("ru-RU",
+                { weekday: 'short',
+                    year: '2-digit',
+                    month: '2-digit',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit' })
+    );
 </script>
 
 <table>
@@ -38,7 +49,7 @@
     <tbody>
     {#each lessons as lesson (lesson.id)}
         <tr>
-            <th>{lesson.start_date} {lesson.start_time}</th>
+            <th>{displayDateTime(lesson.start_iso_time)}</th>
             {#each lesson.attendance_list as {id, status} (id)}
                 <td><input type="checkbox" checked={status} on:change={change_attendance(id, lesson.id)}></td>
             {/each}
