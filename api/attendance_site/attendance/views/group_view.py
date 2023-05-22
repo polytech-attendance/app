@@ -1,5 +1,5 @@
 import pytz
-from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, ExpressionWrapper, F, Q
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, ExpressionWrapper, F, Q, Exists
 
 from django.db.models.functions import Coalesce, Cast
 from rest_framework.generics import ListAPIView, get_object_or_404
@@ -134,7 +134,16 @@ class GroupAttendanceListView(APIView):
         students = Student.objects.filter(group_id=group.id)
         queryset = students.annotate(
             status=Case(
-                When(attendance__lesson_id=lesson_id, attendance__is_attendend=False, then=False),
+                When(
+                    Exists(
+                        Attendance.objects.filter(
+                            student=OuterRef('student_id'),
+                            lesson_id=lesson_id,
+                            is_attendend=False,
+                        )
+                    ),
+                    then=Value(False),
+                ),
                 default=Value(True),
                 output_field=BooleanField(),
             )
