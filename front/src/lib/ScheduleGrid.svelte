@@ -7,13 +7,17 @@
         2 + Math.floor((+time.split(':')[0] - 10) / 2)
     );
     const displayDate = (date) => (
-        ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"][date - 1]
+        new Date(Date.parse(date))
+            .toLocaleDateString("ru-RU",
+                { weekday: 'short',
+                    month: '2-digit',
+                    day: 'numeric', })
     );
 </script>
 
 <div class="grid">
     {#each days as {lessons, weekday, date}}
-        <div class="grid-day-header" style:grid-column={weekday}>{displayDate(weekday)} {date}</div>
+        <div class="grid-day-header" style:grid-column={weekday}>{displayDate(date)}</div>
         {#each lessons as {subject, typeObj, time_start, time_end, name, teachers, groups, id}}
             <div class="grid-item"
                  style:grid-column={weekday}
