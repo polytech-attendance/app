@@ -141,8 +141,9 @@ class SubjectAttendanceView(APIView):
             lesson_start_date = lesson.lesson_start_time.astimezone(tz)
             lesson_data = {
                 'id': lesson.id,
-                'start_date': lesson_start_date.date(),
-                'start_time': lesson_start_date.time(),
+                'start_iso_time':lesson_start_date,
+                #'start_date': lesson_start_date.date(),
+                #'start_time': lesson_start_date.time(),
                 'attendance_list': attendance_by_lesson,
             }
             response_data['lessons'].append(lesson_data)
