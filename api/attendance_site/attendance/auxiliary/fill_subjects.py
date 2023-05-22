@@ -3,11 +3,13 @@ import json
 import requests
 
 
-def get_subject_week(group_id: int, date=None):
-    if date is None:
-        date = datetime.datetime.today()
+def get_subject_week(group_id: int, start_time=None):
 
-    r = requests.get(f'https://ruz.spbstu.ru/api/v1/ruz/scheduler/{group_id}')
+    if start_time is None:
+        cur_day = datetime.today()
+        start_time = f"{cur_day.year}-{cur_day.month}-{cur_day.day}"
+
+    r = requests.get(url=f'https://ruz.spbstu.ru/api/v1/ruz/scheduler/{group_id}?date={start_time}')
 
     j = r.json()
 
