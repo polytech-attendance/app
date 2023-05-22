@@ -109,12 +109,15 @@ class TeacherScheduleView(APIView):
 
         for i in range(7):
             day = {}
+            tz = pytz.timezone('Europe/Moscow')
+            current_datetime = tz.localize(datetime.combine(start_date + timedelta(days=i), datetime.min.time()))
+            iso_datetime = current_datetime.isoformat()
             day['weekday'] = i + 1
-            day['date'] = (start_date.date() + timedelta(days=i)).strftime('%Y-%m-%d')
+            day['date'] = iso_datetime
             day['lessons'] = []
 
             daily_lessons = lessons.filter(
-                lesson_start_time__date=day['date']
+                lesson_start_time__date=day['date'][:10]
             )
 
             for daily_lesson in daily_lessons:
