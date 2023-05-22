@@ -21,7 +21,8 @@ from attendance.views.group_view import GroupAPIView, GroupScheduleView, GroupIt
     GroupAttendanceSubjectView
 from attendance.views.user_view import UserAPIView
 from attendance.views.teacher_view import TeacherAPIView, TeacherScheduleView
-from attendance.views.subject_view import SubjectAPIView, SubjectByTeacherAPIView, SubjectAttendanceView
+from attendance.views.subject_view import SubjectAPIView, SubjectByTeacherAPIView, SubjectAttendanceView, \
+    SubjectAttendanceStatistic
 from attendance.views.attendance_view import AttendanceView
 
 from rest_framework import routers
@@ -44,5 +45,7 @@ urlpatterns = [
     path(f'{apiTAG}attendance', AttendanceView.as_view(), name='Mark students as attend or not'),
     path(f'{apiTAG}teachers/<int:teacher_id>/subjects/', SubjectByTeacherAPIView.as_view(), name='subject-by-teacher'),
     path(f'{apiTAG}subjects/<int:subject_id>/attendance/',SubjectAttendanceView.as_view(),name='attendance by subject'),
+    path(f'{apiTAG}subjects/<int:subject_id>/stats/',SubjectAttendanceStatistic.as_view(),name='stats by subject'),
+
 
 ]

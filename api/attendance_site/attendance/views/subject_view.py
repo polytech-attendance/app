@@ -173,3 +173,55 @@ class SubjectAttendanceView(APIView):
             return Response(response_data, status=400)
 
         return Response(response_data, status=200)
+
+class SubjectAttendanceStatistic(APIView):
+    def statistic_for_student(self,student,subject):
+        overall_lessons_count = Lesson.objects.filter(subject=subject).count()
+        overall_lessons_positive = Attendance.objects.filter(lesson__subject=subject,student=student,is_attendend=Value(True)).count()
+
+        return f'{overall_lessons_positive/overall_lessons_count}'
+
+    def analys_group(self,subject):
+        group = subject.group
+        student_list=[]
+        students = Student.objects.filter(group=subject.group).order_by('student_name')
+        for student in students:
+            student_data = {
+                'abbrev_name':student.student_name,
+                'id':student.student_id,
+                'is_foreign':int(student.is_foreign),
+                'stat':self.statistic_for_student(student,subject)
+            }
+            student_list.append(student_data)
+
+        response_data = {
+            'group': {
+                'id': group.group_id,
+                'name': group.groupname,
+                'students_list': student_list,
+            },
+            'subject': {
+                'name': subject.subject_name,
+                'id': subject.id,
+                'teacher': {
+                    'id': subject.teacher.teacher_id,
+                    'name': subject.teacher.teacher_name,
+                }
+            }
+        }
+
+
+        return response_data
+    def get(self,request,subject_id):
+        try:
+            subject = Subject.objects.get(id=subject_id)
+        except Subject.DoesNotExist:
+            return Response({'error': f'Subject with id {subject_id} not found'}, status=400)
+
+        response_data = self.analys_group(subject)
+
+        if 'error' in response_data:
+            return Response(response_data, status=400)
+
+        return Response(response_data, status=200)
+
