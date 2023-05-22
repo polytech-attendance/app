@@ -1,25 +1,46 @@
 <script>
+    import {error} from "@sveltejs/kit";
+
     export let subjectId;
     export let groupId;
     export let subjectName;
     export let groupName;
     export let lessons;
+    export let studentList;
+
+    var change_attendance = (studentId, lessonId) => (async e =>  {
+        let response = await fetch('http://127.0.0.1:8000/api/v1/attendance', {
+            method: 'post',
+            body: JSON.stringify({
+                student_id: studentId,
+                status: (e.target.checked) ? 1 : 0,
+                lesson_id: lessonId,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw error('Can\'t update attendance');
+        }
+    })
 </script>
 
 <table>
     <thead>
         <tr>
-            {#each lessons[0].attendance_list as {abbrev_name, id, is_foreign, group_id} (id)}
+            <th>ФИО</th>
+            {#each studentList as {abbrev_name, id, is_foreign} (id)}
                 <td class:foreign={is_foreign}>{abbrev_name}</td>
             {/each}
         </tr>
     </thead>
     <tbody>
-    {#each lessons as {lesson_id, lesson_start_date, attendance_list} (lesson_id)}
+    {#each lessons as lesson (lesson.id)}
         <tr>
-            <th>{lesson_start_date}</th>
-            {#each attendance_list as {id, status} (id)}
-                <td>{status}</td>
+            <th>{lesson.start_date}</th>
+            {#each lesson.attendance_list as {id, status} (id)}
+                <td><input type="checkbox" checked={status} on:change={change_attendance(id, lesson.id)}></td>
             {/each}
         </tr>
     {/each}
@@ -27,6 +48,9 @@
 </table>
 
 <style>
+    table thead, table tbody {
+        display: contents;
+    }
     table {
         display: table;
     }
