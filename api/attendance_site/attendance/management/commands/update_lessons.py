@@ -38,7 +38,7 @@ class Command(BaseCommand):
                 except Teacher.DoesNotExist:
                     teacher_data = get_teacher_by_id(item['teacher_id'])
                     teacher_user = make_new_user(teacher_data['first_name'])
-                    Teacher.objects.update_or_create(
+                    teacher,created = Teacher.objects.update_or_create(
                         teacher_id=teacher_data['id'],
                         user=teacher_user,
                         teacher_name=teacher_data['full_name'],
