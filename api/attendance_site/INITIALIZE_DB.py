@@ -1,6 +1,8 @@
 import os
 import platform
 import subprocess
+from datetime import datetime
+
 from UPDATE_LESSONS import update_lessons
 
 
@@ -42,7 +44,8 @@ def init_db():
 if __name__ == '__main__':
     print('Starting initialize DB')
     if init_db():
-        update_lessons()
+        date_arg = datetime.today().date().strftime("%Y-%m-%d")
+        update_lessons(date_arg)
         print('DB succesfully initialize')
     else:
         print('DB initialize interrupted')
