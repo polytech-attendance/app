@@ -10,8 +10,6 @@ class SubjectAPIView(APIView):
     def get(self,request):
         subject_data = Subject.objects.all()
         return Response({'posts': SubjectAPIView(subject_data, many=True).data})
-
-
 '''
 
 class SubjectAPIView(generics.ListAPIView):

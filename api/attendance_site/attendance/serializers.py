@@ -34,6 +34,9 @@ class LessonSerializer(serializers.Serializer):
         return Lesson.objects.create(**validated_data)
 '''
 class SubjectSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer()
+    group = GroupSerializer()
+
     class Meta:
         model = Subject
         fields = ('id', 'group', 'teacher', 'subject_name')
