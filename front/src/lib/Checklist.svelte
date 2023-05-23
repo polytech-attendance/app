@@ -39,7 +39,13 @@
             group = []
         }
     });
-
+    const displayDate = (date) => (
+        new Date(Date.parse(date))
+            .toLocaleDateString("ru-RU",
+                { weekday: 'short',
+                    month: '2-digit',
+                    day: 'numeric', })
+    );
     const handleClick = (student) => async () => {
         student.status = !student.status;
         await sendStatus(student.status, student.id)
@@ -59,7 +65,7 @@
             <div class="modal-header">
                 <!-- Группа -->
                 <p>Группа: {groupName}</p>
-                <p>{date}</p>
+                <p>{displayDate(date)}</p>
                 <p>{time}</p>
             </div>
             <div class="modal-body">
