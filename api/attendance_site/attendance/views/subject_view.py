@@ -178,9 +178,10 @@ class SubjectAttendanceView(APIView):
 class SubjectAttendanceStatistic(APIView):
     def statistic_for_student(self,student,subject):
         overall_lessons_count = Lesson.objects.filter(subject=subject).count()
-        overall_lessons_positive = Attendance.objects.filter(lesson__subject=subject,student=student,is_attendend=Value(True)).count()
+        overall_lessons_negative = Attendance.objects.filter(lesson__subject=subject,student=student,is_attendend=Value(False)).count()
 
-        return f'{overall_lessons_positive/overall_lessons_count}'
+        result = int((1 - (overall_lessons_negative/overall_lessons_count))*100)
+        return f'{result}'
 
     def analys_group(self,subject):
         group = subject.group
