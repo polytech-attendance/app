@@ -27,7 +27,7 @@ form.addEventListener("submit",(e)=>{
             else{
                 console.log(response);
                 small = form.querySelector('.error-msg');
-                small.innerText = "Неверны почта/пароль";
+                small.innerText = "Неверная пара логин-пароль";
                 small.className = "error-msg error";
             }
         })
@@ -49,13 +49,13 @@ function Validate(){
     //validate
     //email
     if (emailVal === ""){
-        setErrorMsg(email, 'Пустое поле нельзя!');
+        setErrorMsg(email, 'Введите e-mail.');
     }
     else 
     setSuccessMsg(email);
     //password
     if (passwordVal === ""){
-        setErrorMsg(password, 'Пустое поле нельзя!');
+        setErrorMsg(password, 'Введите пароль.');
     }
     else
     setSuccessMsg(password);

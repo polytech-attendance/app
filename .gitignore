@@ -130,3 +130,14 @@ dmypy.json
 
 # VS Code
 .vscode/
+# Security issues if commit this!
+*.sqlite3
+*.csv
+
+# And ignore any .idea folder stuff. Please don't commit your IDE settings!
+.idea/
+
+#sqlite
+.sqlite3
+
+.pyc
