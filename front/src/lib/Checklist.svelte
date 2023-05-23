@@ -55,11 +55,11 @@
 </script>
 
 <!-- Test button -->
-<button class="btn btn-light" data-bs-toggle="modal" data-bs-target={"#check-table" + groupId}>
+<button class="btn btn-light" data-bs-toggle="modal" data-bs-target={"#check-table" + lessonId}>
     {groupName}
 </button>
 <!-- Bug appeared here: must pay attention to the data-bs-target (to avoid pointing to the same modal for all text-muted) -->
-<div class="modal fade" id={"check-table" + groupId}>
+<div class="modal fade" id={"check-table" + lessonId}>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
