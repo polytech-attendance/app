@@ -8,4 +8,4 @@
     Статистика посещений группой {data.group.name} дисциплины {data.subject.name}
 </h1>
 
-<StatsTable studentList={data.group.student_list}/>
+<StatsTable studentList={data.group.students_list}/>

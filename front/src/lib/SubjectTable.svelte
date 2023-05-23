@@ -33,20 +33,19 @@
         new Date(Date.parse(start_iso_time))
             .toLocaleDateString("ru-RU",
                 { weekday: 'short',
-                    year: '2-digit',
+                    // year: '2-digit',
                     month: '2-digit',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit' })
     );
 </script>
-
-<table>
+<div class="table-container"><table>
     <thead>
         <tr>
             <th>ФИО</th>
         {#each lessons as lesson (lesson.id)}
-            <th>{displayDateTime(lesson.start_iso_time)}</th>
+            <th style="padding: 0 1em; text-align: center">{displayDateTime(lesson.start_iso_time)}</th>
         {/each}
         </tr>
     </thead>
@@ -55,12 +54,12 @@
         <tr>
             <th class:foreign={student.is_foreign}>{student.abbrev_name}</th>
             {#each data as {id, status, lessonId} (lessonId)}
-                <td><input type="checkbox" checked={status} on:change={change_attendance(id, lessonId)}></td>
+                <td style="text-align: center"><input type="checkbox" checked={status} on:change={change_attendance(id, lessonId)}></td>
             {/each}
         </tr>
     {/each}
     </tbody>
-</table>
+</table></div>
 
 <style>
     table thead, table tbody {
@@ -72,5 +71,21 @@
     table {
         display: block;
         overflow-x: scroll;
+    }
+    th:first-child {
+      position: absolute;
+      width: 10em;
+      left: 0;
+      top: auto;
+      /*only relevant for first row*/
+      margin-top: -1px;
+      /*compensate for top border*/
+    }
+    .table-container {
+      /*width: 500px;*/
+      overflow-x: scroll;
+      margin-left: 10em;
+      overflow-y: visible;
+      padding: 0;
     }
 </style>

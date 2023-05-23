@@ -73,8 +73,6 @@
         grid-template-columns: repeat(6, 1fr);
         gap: 10px;
         margin: 10px;
-        border-width: 5px;
-        border-color: gray;
     }
 
     .grid-day-header {
@@ -82,12 +80,19 @@
         text-align: center;
         font-weight: bold;
     }
+    .grid-day-header {
+        border-right: darkgray 1px solid;
+    }
+    .grid-day-header:last-child {
+        border-right: none;
+    }
 
     .grid-item {
         border-radius: 4px;
         padding: 5px;
         background-color: var(--bs-purple);
     }
+
 
     .grid-item {
         display: flex;
