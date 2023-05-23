@@ -181,12 +181,13 @@ class TeacherScheduleView(APIView):
 
         response_data = {
             'week': {'date_start': start_date.date(), 'date_end': end_date.date()},
-            'days': days,
+            'days': days[:6],
             'teacher': {
                 'id': teacher.teacher_id,
                 'full_name': teacher.teacher_name,
             }
         }
+
 
         return Response(response_data, status=200)
 
