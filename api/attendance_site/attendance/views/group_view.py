@@ -157,13 +157,14 @@ class GroupAttendanceListView(APIView):
             lesson = Lesson.objects.get(id=lesson_id)
         except Lesson.DoesNotExist:
             return  {"error": f"This lesson doesnt exist!"}
+
         subject = lesson.subject
 
         #when subject_name and lesson_start time is equal
 
         print(group)
 
-        '''
+
         try:
             lessons_tmp = Lesson.objects.get(
                 subject__subject_name=subject.subject_name,
@@ -174,7 +175,7 @@ class GroupAttendanceListView(APIView):
         except Lesson.DoesNotExist as ex:
             print("An exception occurred:", ex)
             return {'error':'Unexcepted error'}
-        '''
+
 
         print(group)
         #switch subject
